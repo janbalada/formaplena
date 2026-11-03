@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7C3AED">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Forma Plena · Mis entrenos</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    background: linear-gradient(135deg, #7C3AED, #DB2777 55%, #FF6A2A); color: #fff;
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; padding: 0 24px;
+  }
+  .marca { font-size: 13px; font-weight: 700; letter-spacing: .08em; opacity: .9; text-transform: uppercase; }
+  .titulo { font-size: 26px; font-weight: 900; margin: 8px 0 22px; }
+  .rueda { width: 40px; height: 40px; margin: 0 auto; border-radius: 50%;
+    border: 4px solid rgba(255,255,255,.35); border-top-color: #fff; animation: g .9s linear infinite; }
+  @keyframes g { to { transform: rotate(360deg); } }
+  .texto { margin-top: 16px; font-size: 15px; opacity: .95; line-height: 1.45; }
+  button { margin-top: 20px; background: #fff; color: #DB2777; border: 0; border-radius: 14px;
+    font: inherit; font-weight: 800; font-size: 17px; padding: 14px 26px; }
+</style>
+</head>
+<body>
+<div>
+  <div class="marca">Forma Plena Coaching</div>
+  <div class="titulo">Mis entrenos</div>
+  <div class="rueda" id="rueda"></div>
+  <div class="texto" id="texto">Cargando tu app…</div>
+</div>
+<script>
+(function () {
+  // Servidor de la app (Google Apps Script). Se le habla sin cookies para que
+  // funcione aunque el móvil tenga varias cuentas de Google abiertas.
+  var SERVIDOR = 'https://script.google.com/macros/s/AKfycbxoK5CtWp-VxVcLKB381XKj5cmmEpdNoK5os1zFFQd_FFPTUeZmptooGCfGiAjuO016xg/exec';
+
+  var k = (new URLSearchParams(location.search).get('k') || '').replace(/[^a-zA-Z0-9]/g, '');
+  var texto = document.getElementById('texto'), rueda = document.getElementById('rueda');
+
+  function error(msg, reintentar) {
+    rueda.style.display = 'none';
+    texto.textContent = msg;
+    if (reintentar) {
+      var b = document.createElement('button');
+      b.textContent = 'Reintentar';
+      b.onclick = function () { location.reload(); };
+      texto.parentNode.appendChild(b);
+    }
+  }
+
+  if (!k) { error('Este enlace no es válido. Abre la app desde el email que te envió tu entrenador.'); return; }
+
+  var lento = setTimeout(function () { texto.textContent = 'Un momento, ya casi está…'; }, 6000);
+
+  fetch(SERVIDOR + '?html=1&k=' + encodeURIComponent(k), { credentials: 'omit', redirect: 'follow', cache: 'no-store' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(function (html) {
+      clearTimeout(lento);
+      if (html.indexOf('<html') < 0) throw new Error('Respuesta inesperada');
+      document.open();
+      document.write(html);
+      document.close();
+    })
+    .catch(function () {
+      clearTimeout(lento);
+      error('No se ha podido cargar tu app. Revisa tu conexión a internet y vuelve a intentarlo.', true);
+    });
+})();
+</script>
+</body>
+</html>
