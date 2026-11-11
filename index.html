@@ -7,6 +7,13 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <title>Forma Plena · Mis entrenos</title>
+<!-- Icono y modo app al añadirla a la pantalla de inicio -->
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Forma Plena">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
   html, body { margin: 0; height: 100%; }
   body {
@@ -20,6 +27,9 @@
     border: 4px solid rgba(255,255,255,.35); border-top-color: #fff; animation: g .9s linear infinite; }
   @keyframes g { to { transform: rotate(360deg); } }
   .texto { margin-top: 16px; font-size: 15px; opacity: .95; line-height: 1.45; }
+  .pegar { margin-top: 18px; display: grid; gap: 10px; max-width: 340px; margin-inline: auto; }
+  .pegar input { font: inherit; font-size: 16px; padding: 13px 14px; border-radius: 12px; border: 0; color: #17122B; }
+  .pegar button { margin-top: 0; }
   button { margin-top: 20px; background: #fff; color: #DB2777; border: 0; border-radius: 14px;
     font: inherit; font-weight: 800; font-size: 17px; padding: 14px 26px; }
 </style>
@@ -37,8 +47,39 @@
   // funcione aunque el móvil tenga varias cuentas de Google abiertas.
   var SERVIDOR = 'https://script.google.com/macros/s/AKfycbxoK5CtWp-VxVcLKB381XKj5cmmEpdNoK5os1zFFQd_FFPTUeZmptooGCfGiAjuO016xg/exec';
 
-  var k = (new URLSearchParams(location.search).get('k') || '').replace(/[^a-zA-Z0-9]/g, '');
   var texto = document.getElementById('texto'), rueda = document.getElementById('rueda');
+  var IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function limpiar(t) { return String(t || '').replace(/[^a-zA-Z0-9]/g, ''); }
+  function leer() { try { return limpiar(localStorage.getItem('fp_k')); } catch (e) { return ''; } }
+  function guardar(v) { try { localStorage.setItem('fp_k', v); } catch (e) {} }
+
+  // El enlace personal de cada cliente lleva su código (?k=...). Se guarda en el móvil para que,
+  // al abrir la app desde el icono de la pantalla de inicio, entre directo a lo suyo.
+  var k = limpiar(new URLSearchParams(location.search).get('k'));
+  if (k) guardar(k); else k = leer();
+
+  // En Android el «archivo de la app» (manifest) da el icono y la pantalla completa.
+  // En iPhone no se usa: así el icono abre siempre el enlace personal con el que se añadió.
+  if (!IOS) { var lm = document.createElement('link'); lm.rel = 'manifest'; lm.href = 'manifest.webmanifest'; document.head.appendChild(lm); }
+  var CABECERA = '<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">' +
+    '<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">' +
+    '<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">' +
+    '<meta name="apple-mobile-web-app-title" content="Forma Plena"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">' +
+    (IOS ? '' : '<link rel="manifest" href="manifest.webmanifest">');
+
+  function pedirEnlace() {
+    rueda.style.display = 'none';
+    texto.textContent = 'Pega aquí el enlace de tu app (el que te envió tu entrenador) para entrar. Solo tendrás que hacerlo una vez.';
+    var f = document.createElement('form'); f.className = 'pegar';
+    f.innerHTML = '<input id="enlace" type="url" inputmode="url" autocomplete="off" placeholder="https://janbalada.github.io/formaplena/?k=…" aria-label="Enlace de tu app"><button type="submit">Entrar</button>';
+    f.onsubmit = function (ev) {
+      ev.preventDefault();
+      var v = document.getElementById('enlace').value, m = v.match(/[?&]k=([a-zA-Z0-9]+)/), c = limpiar(m ? m[1] : v);
+      if (c.length < 16) { texto.textContent = 'Ese enlace no parece correcto. Cópialo entero desde el email de tu entrenador.'; return; }
+      guardar(c); location.href = location.pathname + '?k=' + c;
+    };
+    texto.parentNode.appendChild(f);
+  }
 
   function error(msg, reintentar) {
     rueda.style.display = 'none';
@@ -51,7 +92,7 @@
     }
   }
 
-  if (!k) { error('Este enlace no es válido. Abre la app desde el email que te envió tu entrenador.'); return; }
+  if (!k) { pedirEnlace(); return; }
 
   var lento = setTimeout(function () { texto.textContent = 'Un momento, ya casi está…'; }, 6000);
 
@@ -60,6 +101,8 @@
     .then(function (html) {
       clearTimeout(lento);
       if (html.indexOf('<html') < 0) throw new Error('Respuesta inesperada');
+      // Se mantienen el icono y el modo app también dentro de la app ya cargada.
+      html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, function (h) { return h + CABECERA; }) : CABECERA + html;
       document.open();
       document.write(html);
       document.close();
