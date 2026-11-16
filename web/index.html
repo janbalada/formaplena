@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Coaching online de entreno y nutrición con Jan Balada: rutina y dieta personalizadas en tu app, chat con tu entrenador y revisión semanal. 10 € al mes, sin permanencia.">
+<meta name="theme-color" content="#7C3AED">
+<meta property="og:title" content="Forma Plena Coaching">
+<meta property="og:description" content="Entrena con un plan hecho para ti. Rutina, dieta, app y chat con tu entrenador por 10 € al mes.">
+<meta property="og:image" content="https://janbalada.github.io/formaplena/icons/icono-512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<title>Forma Plena Coaching</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: una sola columna editorial con un teléfono de la app como pieza central; secciones con mucho aire y una franja de color de marca */
+:root {
+  --bg: #FBFAFE; --surface: #FFFFFF; --ink: #17122B; --muted: #625C76; --line: #E7E3F2;
+  --violeta: #7C3AED; --rosa: #DB2777; --naranja: #FF6A2A; --soft: #F1EBFF; --ok: #12B76A;
+  --grad: linear-gradient(135deg, #7C3AED 0%, #DB2777 55%, #FF6A2A 100%);
+  --f-disp: 'Outfit', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+  --f-text: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --r: 20px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F0B1C; --surface: #191329; --ink: #F3F0FB; --muted: #A79FBD; --line: #2C2442; --soft: #261A47;
+  --violeta: #A78BFA; --rosa: #F472B6; --naranja: #FB923C; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0F0B1C; --surface: #191329; --ink: #F3F0FB; --muted: #A79FBD; --line: #2C2442; --soft: #261A47;
+  --violeta: #A78BFA; --rosa: #F472B6; --naranja: #FB923C; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-text); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+.envoltura { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--f-disp); line-height: 1.08; text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+h2 { font-size: clamp(30px, 4.6vw, 46px); font-weight: 800; }
+h3 { font-size: 20px; font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+.etiqueta { font-family: var(--f-disp); font-weight: 700; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--violeta); }
+.boton { display: inline-flex; align-items: center; gap: 10px; padding: 15px 24px; border-radius: 999px; font-family: var(--f-disp); font-weight: 800; font-size: 17px; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
+.boton.principal { background: var(--grad); color: #fff; box-shadow: 0 10px 30px rgba(124, 58, 237, .32); }
+.boton.secundario { border: 2px solid var(--line); color: var(--ink); background: var(--surface); }
+.boton:hover { transform: translateY(-2px); }
+.boton:focus-visible, summary:focus-visible { outline: 3px solid var(--naranja); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .boton { transition: none; } .boton:hover { transform: none; } }
+
+/* Cabecera */
+.cab { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 20px; }
+.marca { display: flex; align-items: center; gap: 10px; font-family: var(--f-disp); font-weight: 900; font-size: 19px; letter-spacing: -0.01em; text-decoration: none; }
+.marca i { width: 34px; height: 34px; border-radius: 11px; background: var(--grad); display: grid; place-items: center; color: #fff; font-style: normal; font-size: 17px; }
+.cab nav { display: flex; gap: 22px; font-weight: 600; font-size: 15px; }
+.cab nav a { text-decoration: none; color: var(--muted); }
+.cab nav a:hover { color: var(--ink); }
+@media (max-width: 720px) { .cab nav { display: none; } }
+
+/* Portada */
+.portada { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; padding-block: 40px 72px; }
+.portada h1 { font-size: clamp(44px, 7.4vw, 84px); font-weight: 900; letter-spacing: -0.035em; }
+.portada h1 em { font-style: normal; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.portada .entrada { font-size: 19px; color: var(--muted); max-width: 33em; margin-top: 22px; }
+.portada .acciones { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+.portada .datos { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 34px; }
+.portada .datos div { font-size: 14px; color: var(--muted); }
+.portada .datos b { display: block; font-family: var(--f-disp); font-size: 26px; color: var(--ink); font-weight: 800; }
+@media (max-width: 860px) { .portada { grid-template-columns: 1fr; gap: 40px; padding-block: 24px 56px; } }
+
+/* Teléfono con la app */
+.telefono { justify-self: center; width: min(320px, 100%); border-radius: 44px; padding: 12px; background: #17122B; box-shadow: 0 30px 60px rgba(23, 18, 43, .25), inset 0 0 0 2px #2E2647; }
+.pantalla { border-radius: 34px; overflow: hidden; background: #F6F4FB; color: #17122B; font-family: var(--f-text); }
+.p-hero { background: var(--grad); color: #fff; padding: 22px 18px 18px; }
+.p-hero small { opacity: .85; font-size: 12px; }
+.p-hero b { display: block; font-family: var(--f-disp); font-size: 22px; font-weight: 800; margin: 2px 0 12px; }
+.p-semana { display: flex; gap: 6px; }
+.p-semana span { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.35); }
+.p-semana span.ok { background: #fff; }
+.p-cuerpo { padding: 14px; display: grid; gap: 10px; }
+.p-ej { background: #fff; border-radius: 16px; padding: 12px 14px; box-shadow: 0 2px 8px rgba(23,18,43,.06); }
+.p-ej h4 { margin: 0; font-family: var(--f-disp); font-size: 15px; }
+.p-ej .meta { font-size: 12px; color: #625C76; margin: 2px 0 8px; }
+.p-series { display: grid; gap: 5px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.p-series div { display: grid; grid-template-columns: 22px 1fr 1fr 24px; align-items: center; gap: 6px; background: #F6F4FB; border-radius: 9px; padding: 5px 8px; }
+.p-series div.hecha { background: #E3F8EE; }
+.p-series i { font-style: normal; text-align: right; color: #12B76A; font-weight: 800; }
+.p-subir { font-size: 12px; font-weight: 700; color: #7C3AED; margin-top: 8px; }
+.p-mini { display: flex; gap: 8px; }
+.p-mini div { flex: 1; background: #fff; border-radius: 14px; padding: 10px; font-size: 11px; color: #625C76; box-shadow: 0 2px 8px rgba(23,18,43,.06); }
+.p-mini b { display: block; font-family: var(--f-disp); font-size: 18px; color: #17122B; }
+
+/* Escena del teléfono con avisos flotantes */
+.escena { position: relative; justify-self: center; width: min(400px, 100%); display: grid; justify-items: center; padding-block: 24px; }
+.escena::before { content: ""; position: absolute; inset: 8% 4%; background: var(--grad); filter: blur(70px); opacity: .28; border-radius: 50%; z-index: 0; }
+.escena .telefono { position: relative; z-index: 1; }
+.burbuja { position: absolute; z-index: 2; display: flex; align-items: center; gap: 10px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; box-shadow: 0 14px 34px rgba(23, 18, 43, .16); font-size: 13px; line-height: 1.3; max-width: 230px; animation: flota 6s ease-in-out infinite; }
+.burbuja b { display: block; font-family: var(--f-disp); font-size: 14px; }
+.burbuja small { color: var(--muted); }
+.burbuja .ico { flex: none; width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; color: #fff; }
+.burbuja .ico svg { width: 18px; height: 18px; }
+.b1 { top: -1%; left: -8%; } .b1 .ico { background: var(--violeta); }
+.b2 { top: 44%; right: -10%; animation-delay: -2s; } .b2 .ico { background: var(--ok); }
+.b3 { bottom: 6%; left: -8%; animation-delay: -4s; } .b3 .ico { background: var(--naranja); }
+@keyframes flota { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@media (prefers-reduced-motion: reduce) { .burbuja { animation: none; } }
+@media (max-width: 520px) { .b1 { left: 0; top: 0; } .b2 { right: 0; } .b3 { left: 0; bottom: 0; } .burbuja { max-width: 200px; padding: 8px 12px; } }
+
+/* Qué incluye: cada función con una mini vista de la app */
+.funciones { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.funcion { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; display: grid; grid-template-rows: auto 1fr; min-width: 0; }
+.funcion .vista { height: 150px; background: var(--soft); display: grid; place-items: center; padding: 18px; position: relative; }
+.funcion .texto { padding: 20px 22px 22px; display: grid; gap: 6px; align-content: start; }
+.funcion b { font-family: var(--f-disp); font-size: 18px; }
+.funcion span.t { color: var(--muted); font-size: 15px; }
+@media (max-width: 860px) { .funciones { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .funciones { grid-template-columns: 1fr; } }
+.v-video { width: 100%; max-width: 230px; aspect-ratio: 16 / 9; border-radius: 14px; background: linear-gradient(135deg, #2A1F4D, #17122B); display: grid; place-items: center; position: relative; box-shadow: 0 8px 20px rgba(23, 18, 43, .2); }
+.v-video::after { content: "Hip thrust · técnica"; position: absolute; left: 10px; bottom: 8px; font-size: 11px; color: rgba(255,255,255,.8); font-weight: 600; }
+.v-video i { width: 46px; height: 46px; border-radius: 50%; background: var(--grad); display: grid; place-items: center; }
+.v-video i::before { content: ""; border-left: 14px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; margin-left: 4px; }
+.v-barras { display: flex; align-items: end; gap: 10px; height: 100px; }
+.v-barras div { width: 26px; border-radius: 8px 8px 4px 4px; background: color-mix(in srgb, var(--violeta) 35%, transparent); position: relative; }
+.v-barras div:last-child { background: var(--grad); }
+.v-barras div:last-child::after { content: "+2,5 kg"; position: absolute; top: -26px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 12px; font-weight: 800; color: var(--violeta); }
+.v-chips { display: grid; gap: 8px; justify-items: center; }
+.v-chips .fila { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.v-chips span { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.v-chips span.on { border-color: var(--violeta); color: var(--violeta); }
+.v-chips em { font-style: normal; color: var(--muted); font-weight: 800; }
+.v-chat { width: 100%; max-width: 240px; display: grid; gap: 8px; font-size: 13px; }
+.v-chat p { padding: 8px 12px; border-radius: 14px; max-width: 85%; line-height: 1.35; }
+.v-chat .yo { background: var(--surface); border: 1px solid var(--line); justify-self: start; border-bottom-left-radius: 4px; }
+.v-chat .el { background: var(--grad); color: #fff; justify-self: end; border-bottom-right-radius: 4px; }
+.v-caras { display: grid; gap: 10px; justify-items: center; }
+.v-caras small { font-weight: 700; color: var(--muted); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.v-caras .fila { display: flex; gap: 8px; }
+.v-caras span { width: 38px; height: 38px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); display: grid; place-items: center; font-size: 20px; }
+.v-caras span.on { border: 2px solid var(--violeta); transform: scale(1.12); }
+.v-informe { width: 100%; max-width: 240px; }
+.v-informe svg { width: 100%; height: auto; display: block; }
+.v-informe .cifras { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 6px; }
+.v-informe .cifras b { display: block; font-family: var(--f-disp); font-size: 18px; color: var(--ink); }
+.ejemplo { position: absolute; top: 10px; right: 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+/* Secciones */
+section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
+.bloque .cab-sec { display: grid; gap: 12px; max-width: 640px; margin-bottom: 40px; }
+.bloque .cab-sec p { color: var(--muted); font-size: 18px; }
+
+/* Método: es un proceso real, por eso va numerado */
+.pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: paso; }
+.pasos li { counter-increment: paso; display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 3px solid var(--line); }
+.pasos li::before { content: counter(paso); font-family: var(--f-disp); font-weight: 900; font-size: 40px; line-height: 1; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pasos li p { color: var(--muted); font-size: 15px; }
+.pasos .cuando { font-size: 13px; font-weight: 700; color: var(--ink); }
+@media (max-width: 860px) { .pasos { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .pasos { grid-template-columns: 1fr; } }
+
+/* Qué incluye */
+.incluye { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.incluye div { background: var(--surface); padding: 22px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.incluye b { font-family: var(--f-disp); font-size: 17px; }
+.incluye span { color: var(--muted); font-size: 15px; }
+@media (max-width: 860px) { .incluye { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .incluye { grid-template-columns: 1fr; } }
+
+/* Precios */
+.planes { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: stretch; max-width: 880px; }
+.plan.extra { background: var(--soft); border-style: dashed; }
+.contacto-links { display: flex; gap: 14px; flex-wrap: wrap; }
+.contacto-links a { color: inherit; font-weight: 700; text-decoration: none; }
+.contacto-links a:hover { color: var(--violeta); }
+.plan { background: var(--surface); border: 1.5px solid var(--line); border-radius: var(--r); padding: 26px; display: grid; gap: 14px; align-content: start; }
+.plan.destacado { border: 2px solid var(--violeta); box-shadow: 0 16px 40px rgba(124, 58, 237, .14); position: relative; }
+.plan .sello { position: absolute; top: -13px; left: 24px; background: var(--grad); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; }
+.plan .precio { font-family: var(--f-disp); font-weight: 900; font-size: 42px; line-height: 1; font-variant-numeric: tabular-nums; }
+.plan .precio small { font-size: 16px; font-weight: 600; color: var(--muted); }
+.plan .precio.hueco { color: var(--muted); font-size: 30px; }
+.plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
+.plan li::before { content: "✓"; color: var(--ok); font-weight: 900; margin-right: 8px; }
+.plan .boton { justify-content: center; margin-top: 6px; }
+@media (max-width: 860px) { .planes { grid-template-columns: 1fr; max-width: 460px; } }
+.nota-borrador { margin-top: 18px; font-size: 14px; color: var(--muted); background: var(--soft); border-radius: 14px; padding: 12px 16px; }
+
+/* Resultados (solo con permiso) */
+.resultados { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.resultado { border: 2px dashed var(--line); border-radius: var(--r); padding: 24px; display: grid; gap: 8px; color: var(--muted); font-size: 15px; min-height: 160px; align-content: center; text-align: center; }
+.resultado b { color: var(--ink); font-family: var(--f-disp); }
+@media (max-width: 860px) { .resultados { grid-template-columns: 1fr; } }
+
+/* Preguntas */
+.preguntas { display: grid; gap: 10px; max-width: 760px; }
+.preguntas details { background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px; padding: 0 20px; }
+.preguntas summary { cursor: pointer; list-style: none; padding-block: 18px; font-family: var(--f-disp); font-weight: 700; font-size: 18px; display: flex; justify-content: space-between; gap: 12px; }
+.preguntas summary::-webkit-details-marker { display: none; }
+.preguntas summary::after { content: "+"; color: var(--violeta); font-size: 24px; line-height: 1; }
+.preguntas details[open] summary::after { content: "−"; }
+.preguntas details p { color: var(--muted); padding-bottom: 18px; max-width: 62ch; }
+
+/* Cierre */
+.cierre { margin-block: 72px; border-radius: 28px; background: var(--grad); color: #fff; padding: clamp(32px, 6vw, 64px); display: grid; gap: 18px; justify-items: start; }
+.cierre h2 { font-size: clamp(32px, 5vw, 52px); font-weight: 900; max-width: 15em; }
+.cierre p { font-size: 18px; opacity: .92; max-width: 34em; }
+.cierre .boton { background: #fff; color: #17122B; box-shadow: none; }
+footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} body{margin:0} img{max-width:100%} [hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="envoltura">
+  <header class="cab">
+    <a class="marca" href="#inicio"><i>F</i>Forma Plena</a>
+    <nav aria-label="Secciones">
+      <a href="#metodo">Método</a><a href="#incluye">Qué incluye</a><a href="#precios">Precios</a><a href="#preguntas">Preguntas</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <section class="portada">
+      <div>
+        <p class="etiqueta">Coaching online de entreno y nutrición</p>
+        <h1 style="margin-top:14px">Entrena con un plan hecho <em>para ti</em>.</h1>
+        <p class="entrada">Rutina y dieta diseñadas por tu entrenador a partir de tu cuerpo, tu horario y tu objetivo. Lo llevas todo en tu app: qué toca hoy, con cuánto peso y qué comer. Y cada semana lo ajustamos según cómo vas.</p>
+        <div class="acciones">
+          <a class="boton principal js-formulario" href="#" target="_blank" rel="noopener">Quiero empezar →</a>
+          <a class="boton secundario" href="#metodo">Cómo funciona</a>
+        </div>
+        <div class="datos">
+          <div><b>10 min</b>formulario inicial</div>
+          <div><b>Cada semana</b>revisión y ajustes</div>
+          <div><b>3 idiomas</b>català · castellano · english</div>
+        </div>
+      </div>
+
+      <div class="escena">
+        <div class="burbuja b1" aria-hidden="true"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span><span><b>Jan te ha escrito</b><small>«¿Qué tal ha ido la pierna hoy?»</small></span></div>
+        <div class="burbuja b2" aria-hidden="true"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><span><b>¡Nuevo récord!</b><small>Hip thrust · 42,5 kg</small></span></div>
+        <div class="burbuja b3" aria-hidden="true"><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span><b>Llamada reservada</b><small>Jueves · 18:20</small></span></div>
+        <div class="telefono" role="img" aria-label="Pantalla de la app de Forma Plena con el entreno del día">
+        <div class="pantalla">
+          <div class="p-hero"><small>Lunes · Glúteo y pierna</small><b>Hola, Laura 👋</b>
+            <div class="p-semana" aria-hidden="true"><span class="ok"></span><span class="ok"></span><span></span><span></span></div>
+          </div>
+          <div class="p-cuerpo">
+            <div class="p-ej">
+              <h4>Hip thrust en máquina</h4>
+              <p class="meta">3 × 8–12 · descanso 2 min · RIR 2</p>
+              <div class="p-series">
+                <div class="hecha"><span>1</span><span>40 kg</span><span>12 reps</span><i>✓</i></div>
+                <div class="hecha"><span>2</span><span>40 kg</span><span>12 reps</span><i>✓</i></div>
+                <div><span>3</span><span>40 kg</span><span>— reps</span><i></i></div>
+              </div>
+              <p class="p-subir">↑ Hoy toca subir a 42,5 kg</p>
+            </div>
+            <div class="p-mini"><div><b>2/4</b>entrenos esta semana</div><div><b>5</b>récords este mes</div></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="bloque" id="metodo">
+      <div class="cab-sec">
+        <p class="etiqueta">El método</p>
+        <h2>De un formulario a tu plan, en cuatro pasos.</h2>
+        <p>Nada de plantillas genéricas: cada plan sale de tus respuestas y lo revisa tu entrenador antes de que te llegue.</p>
+      </div>
+      <ol class="pasos">
+        <li><h3>Cuéntanos de ti</h3><p>Rellenas un formulario: objetivo, nivel, lesiones, días disponibles, lo que comes y lo que no.</p><span class="cuando">10 minutos</span></li>
+        <li><h3>Diseñamos tu plan</h3><p>Calculamos tus calorías y macros y preparamos tu rutina y tu dieta con opciones. Tu entrenador lo revisa todo.</p><span class="cuando">En 1–2 días</span></li>
+        <li><h3>Entrenas con la app</h3><p>Apuntas pesos y repeticiones, ves el vídeo de cada ejercicio y la app te dice cuándo subir peso.</p><span class="cuando">Desde el primer día</span></li>
+        <li><h3>Revisamos y ajustamos</h3><p>Cada domingo haces una revisión de 2 minutos. Con eso, y con tu peso y tus entrenos, ajustamos el plan.</p><span class="cuando">Cada semana</span></li>
+      </ol>
+    </section>
+
+    <section class="bloque" id="incluye">
+      <div class="cab-sec">
+        <p class="etiqueta">Qué incluye</p>
+        <h2>Todo tu plan en el móvil.</h2>
+        <p>Una app propia, sin descargas: la añades a tu pantalla de inicio y funciona como una app más.</p>
+      </div>
+      <div class="funciones">
+        <div class="funcion"><div class="vista"><div class="v-video" role="img" aria-label="Vídeo de un ejercicio"><i></i></div></div>
+          <div class="texto"><b>Rutina con vídeos</b><span class="t">Cada ejercicio con su vídeo, series, repeticiones, descanso y cómo hacerlo.</span></div></div>
+        <div class="funcion"><div class="vista"><div class="v-barras" role="img" aria-label="Barras de peso subiendo semana a semana"><div style="height:42%"></div><div style="height:55%"></div><div style="height:63%"></div><div style="height:80%"></div></div></div>
+          <div class="texto"><b>Progresión automática</b><span class="t">La app recuerda tus pesos y te avisa cuándo toca subir.</span></div></div>
+        <div class="funcion"><div class="vista"><div class="v-chips" role="img" aria-label="Intercambio de alimentos"><div class="fila"><span class="on">Pollo 150 g</span><em>⇄</em><span>Pavo 150 g</span></div><div class="fila"><span>Atún 140 g</span><em>⇄</em><span>Tofu 220 g</span></div></div></div>
+          <div class="texto"><b>Dieta flexible</b><span class="t">Varias opciones por comida e intercambios de alimentos que aportan lo mismo.</span></div></div>
+        <div class="funcion"><div class="vista"><div class="v-chat" role="img" aria-label="Conversación en el chat"><p class="yo">La máquina de prensa está ocupada 😅</p><p class="el">Cámbiala por sentadilla búlgara, 3×10. ¡Dale!</p></div></div>
+          <div class="texto"><b>Chat y llamadas con tu entrenador</b><span class="t">Escríbele, mándale notas de voz o reserva una llamada desde la app.</span></div></div>
+        <div class="funcion"><div class="vista"><div class="v-caras" role="img" aria-label="Escala de energía en la revisión semanal"><small>¿Qué tal tu energía?</small><div class="fila"><span>😫</span><span>😕</span><span>😐</span><span class="on">🙂</span><span>💪</span></div></div></div>
+          <div class="texto"><b>Revisión semanal</b><span class="t">Energía, sueño, hambre y molestias: tu entrenador lo ve y ajusta tu plan.</span></div></div>
+        <div class="funcion"><div class="vista"><span class="ejemplo">Ejemplo</span><div class="v-informe" role="img" aria-label="Ejemplo de informe mensual con la cintura bajando">
+            <svg viewBox="0 0 240 80" aria-hidden="true"><defs><linearGradient id="gInf" x1="0" x2="1"><stop offset="0" stop-color="#7C3AED"/><stop offset=".55" stop-color="#DB2777"/><stop offset="1" stop-color="#FF6A2A"/></linearGradient></defs>
+              <path d="M6 18 L60 26 L114 34 L168 46 L222 58" fill="none" stroke="url(#gInf)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="222" cy="58" r="6" fill="#FF6A2A"/></svg>
+            <div class="cifras"><span><b>14</b>entrenos</span><span><b>6</b>récords</span><span><b>−3 cm</b>cintura</span></div></div></div>
+          <div class="texto"><b>Informe mensual</b><span class="t">Entrenos, kilos movidos, récords y la evolución de tu peso y tu cintura.</span></div></div>
+      </div>
+    </section>
+
+    <section class="bloque" id="precios">
+      <div class="cab-sec">
+        <p class="etiqueta">Precios</p>
+        <h2>Un precio. Todo incluido.</h2>
+        <p>Sin permanencia: pagas mes a mes y lo dejas cuando quieras. Y si quieres entrenar conmigo en persona, lo reservas desde la app.</p>
+      </div>
+      <div class="planes" id="planes"></div>
+      <p class="nota-borrador" id="nota-precios" hidden>Borrador: faltan tus precios. Cuando me los pases, los pongo aquí.</p>
+    </section>
+
+    <section class="bloque" id="resultados">
+      <div class="cab-sec">
+        <p class="etiqueta">Resultados</p>
+        <h2>Personas reales, con su permiso.</h2>
+        <p>Solo publicamos resultados de clientes que nos han dado su permiso expreso.</p>
+      </div>
+      <div class="resultados" id="lista-resultados"></div>
+    </section>
+
+    <section class="bloque" id="preguntas">
+      <div class="cab-sec">
+        <p class="etiqueta">Preguntas frecuentes</p>
+        <h2>Lo que más nos preguntan.</h2>
+      </div>
+      <div class="preguntas">
+        <details><summary>¿Necesito ir al gimnasio?</summary><p>No. Diseñamos la rutina con el material que tengas: gimnasio completo, gimnasio básico o entrenar en casa con mancuernas o gomas.</p></details>
+        <details><summary>¿Cuántos días tengo que entrenar?</summary><p>Los que puedas de verdad. Adaptamos la rutina a tus días disponibles, de 2 a 6 por semana, y a cuánto tiempo tienes por sesión.</p></details>
+        <details><summary>¿Y si tengo una lesión o una molestia?</summary><p>Nos lo cuentas en el formulario y lo tenemos en cuenta desde el primer día. Si algo te molesta durante un entreno, cambias el ejercicio en la app y tu entrenador lo revisa.</p></details>
+        <details><summary>¿La dieta es muy estricta?</summary><p>Tienes varias opciones para cada comida y puedes cambiar alimentos por otros equivalentes. Si no quieres ver calorías, la app no te las enseña.</p></details>
+        <details><summary>¿Hay permanencia?</summary><p id="faq-permanencia">No. Son 10 € al mes y puedes dejarlo cuando quieras, sin penalizaciones.</p></details>
+        <details><summary>¿Puedo entrenar contigo en persona?</summary><p>Sí. Desde el apartado Reservas de la app eliges día y hora para un entreno presencial de 90 minutos donde tú prefieras (10 € la sesión, aparte de la cuota). También puedes reservar llamadas de 20 minutos para comentar cómo vas.</p></details>
+      </div>
+    </section>
+
+    <section class="cierre">
+      <h2>Tu primer entreno puede ser esta semana.</h2>
+      <p>Rellena el formulario y en 1–2 días tendrás tu rutina, tu dieta y tu app listas.</p>
+      <a class="boton js-formulario" href="#" target="_blank" rel="noopener">Rellenar el formulario →</a>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="anio"></span> Forma Plena Coaching</span>
+    <span id="contacto" class="contacto-links"></span>
+  </footer>
+</div>
+
+<script>
+// ------- Datos de la web: cámbialos aquí -------
+var WEB = {
+  formulario: 'https://docs.google.com/forms/d/1dbY2cLGtSvUy1DIVe8u8ulW9HurQUSjHgMFX8mt0x1I/viewform',
+  contacto: { whatsapp: '34681193409', email: 'janbaladacaudetd@gmail.com', instagram: '' },   // whatsapp: solo números con prefijo (p. ej. 34600000000) · instagram: sin @
+  planes: [
+    { nombre: 'Plan completo', precio: 10, periodo: '/mes', detalle: 'Todo lo que necesitas para entrenar y comer con un plan hecho para ti.', destacado: true, sello: 'Sin permanencia',
+      incluye: ['Rutina y dieta personalizadas', 'App con vídeos y progresión', 'Chat y llamadas con tu entrenador', 'Revisión semanal y ajustes', 'Informe mensual de tu progreso'] },
+    { nombre: 'Entreno presencial', precio: 10, periodo: '/sesión', detalle: 'Un extra opcional: entrenamos juntos donde tú elijas.', extra: true, boton: 'Ver cómo reservar',
+      incluye: ['90 minutos conmigo', 'En tu gimnasio, tu casa o al aire libre', 'Técnica, sesión completa o lo que quieras trabajar', 'Se reserva desde la app'] }
+  ],
+  resultados: []             // { nombre: 'Laura, 28', texto: '−6 kg y +20 kg en hip thrust en 3 meses' } (solo con permiso)
+};
+
+(function () {
+  var faltanPrecios = WEB.planes.some(function (p) { return p.precio === null; });
+  document.getElementById('planes').innerHTML = WEB.planes.map(function (p) {
+    return '<div class="plan' + (p.destacado ? ' destacado' : '') + (p.extra ? ' extra' : '') + '">' + (p.sello ? '<span class="sello">' + p.sello + '</span>' : '') +
+      '<h3>' + p.nombre + '</h3><p class="precio' + (p.precio === null ? ' hueco' : '') + '">' + (p.precio === null ? '— €' : p.precio + ' €') + '<small> ' + p.periodo + '</small></p>' +
+      '<p style="color:var(--muted)">' + p.detalle + '</p><ul>' + p.incluye.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+      (p.extra ? '<a class="boton secundario" href="#preguntas">' + p.boton + '</a>' : '<a class="boton principal js-formulario" href="#" target="_blank" rel="noopener">Empezar</a>') + '</div>';
+  }).join('');
+  document.getElementById('nota-precios').hidden = !faltanPrecios;
+
+  var res = document.getElementById('lista-resultados');
+  res.innerHTML = WEB.resultados.length
+    ? WEB.resultados.map(function (r) { return '<div class="resultado" style="border-style:solid;text-align:left"><b>' + r.nombre + '</b>' + r.texto + '</div>'; }).join('')
+    : [1, 2, 3].map(function () { return '<div class="resultado"><b>Hueco para un resultado</b>Se rellena cuando un cliente dé su permiso para publicarlo.</div>'; }).join('');
+
+  document.querySelectorAll('.js-formulario').forEach(function (a) {
+    if (WEB.formulario) a.href = WEB.formulario;
+    else { a.removeAttribute('target'); a.href = '#precios'; }
+  });
+  document.getElementById('anio').textContent = new Date().getFullYear();
+  var c = WEB.contacto, links = [];
+  if (c.whatsapp) links.push('<a href="https://wa.me/' + c.whatsapp + '" target="_blank" rel="noopener">WhatsApp · ' + c.whatsapp.slice(2).replace(/(\d{3})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4') + '</a>');
+  if (c.email) links.push('<a href="mailto:' + c.email + '">' + c.email + '</a>');
+  if (c.instagram) links.push('<a href="https://instagram.com/' + c.instagram + '" target="_blank" rel="noopener">Instagram @' + c.instagram + '</a>');
+  document.getElementById('contacto').innerHTML = links.length ? links.join('') : 'Contacto: pendiente';
+})();
+</script>
+
+</body>
+</html>
