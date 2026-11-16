@@ -143,6 +143,8 @@ a { color: inherit; }
 .v-informe .cifras b { display: block; font-family: var(--f-disp); font-size: 18px; color: var(--ink); }
 .ejemplo { position: absolute; top: 10px; right: 12px; font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 
+.aviso-amigo { background: var(--grad); color: #fff; text-align: center; font-weight: 700; font-size: 14px; padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
 /* Secciones */
 section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
 .bloque .cab-sec { display: grid; gap: 12px; max-width: 640px; margin-bottom: 40px; }
@@ -350,7 +352,8 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var
 <script>
 // ------- Datos de la web: cámbialos aquí -------
 var WEB = {
-  formulario: 'https://docs.google.com/forms/d/1dbY2cLGtSvUy1DIVe8u8ulW9HurQUSjHgMFX8mt0x1I/viewform',
+  formulario: 'https://docs.google.com/forms/d/e/1FAIpQLSfL1sSyGomZbEYxWkbrbjEIVHqMYTNbC_KUMqLSBntRvlw08g/viewform',
+  campoAmigo: 'entry.509349599',   // pregunta «¿Te ha recomendado alguien?» del formulario
   contacto: { whatsapp: '34681193409', email: 'janbaladacaudetd@gmail.com', instagram: '' },   // whatsapp: solo números con prefijo (p. ej. 34600000000) · instagram: sin @
   planes: [
     { nombre: 'Plan completo', precio: 10, periodo: '/mes', detalle: 'Todo lo que necesitas para entrenar y comer con un plan hecho para ti.', destacado: true, sello: 'Sin permanencia',
@@ -376,8 +379,13 @@ var WEB = {
     ? WEB.resultados.map(function (r) { return '<div class="resultado" style="border-style:solid;text-align:left"><b>' + r.nombre + '</b>' + r.texto + '</div>'; }).join('')
     : [1, 2, 3].map(function () { return '<div class="resultado"><b>Hueco para un resultado</b>Se rellena cuando un cliente dé su permiso para publicarlo.</div>'; }).join('');
 
+  // Si llega con el enlace de un cliente (?ref=codigo), el formulario se abre con su código ya puesto.
+  var ref = '';
+  try { ref = (new URLSearchParams(location.search).get('ref') || '').replace(/[^a-z0-9]/gi, '').toLowerCase(); if (ref) localStorage.setItem('fp_ref', ref); else ref = localStorage.getItem('fp_ref') || ''; } catch (e) {}
+  var urlForm = WEB.formulario + (ref ? '?usp=pp_url&' + WEB.campoAmigo + '=' + encodeURIComponent(ref) : '');
+  if (ref) { var av = document.createElement('div'); av.className = 'aviso-amigo'; av.textContent = '🎁 Vienes recomendado por un amigo: cuando te apuntes, ya saldrá su código en el formulario.'; document.body.insertBefore(av, document.body.firstChild); }
   document.querySelectorAll('.js-formulario').forEach(function (a) {
-    if (WEB.formulario) a.href = WEB.formulario;
+    if (WEB.formulario) a.href = urlForm;
     else { a.removeAttribute('target'); a.href = '#precios'; }
   });
   document.getElementById('anio').textContent = new Date().getFullYear();
