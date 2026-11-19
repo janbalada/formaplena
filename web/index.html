@@ -226,7 +226,7 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var
         <p class="entrada">Rutina y dieta diseñadas por tu entrenador a partir de tu cuerpo, tu horario y tu objetivo. Lo llevas todo en tu app: qué toca hoy, con cuánto peso y qué comer. Y cada semana lo ajustamos según cómo vas.</p>
         <div class="acciones">
           <a class="boton principal js-formulario" href="#" target="_blank" rel="noopener">Quiero empezar →</a>
-          <a class="boton secundario" href="#metodo">Cómo funciona</a>
+          <a class="boton secundario js-test" href="test.html">Test gratis · 2 min</a>
         </div>
         <div class="datos">
           <div><b>10 min</b>formulario inicial</div>
@@ -340,6 +340,7 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var
       <h2>Tu primer entreno puede ser esta semana.</h2>
       <p>Rellena el formulario y en 1–2 días tendrás tu rutina, tu dieta y tu app listas.</p>
       <a class="boton js-formulario" href="#" target="_blank" rel="noopener">Rellenar el formulario →</a>
+      <p style="margin-top:14px">¿Aún dudas? <a class="js-test" href="test.html" style="font-weight:700">Haz el test gratis en 2 minutos</a> y mira tu primer entreno.</p>
     </section>
   </main>
 
@@ -388,6 +389,7 @@ var WEB = {
     if (WEB.formulario) a.href = urlForm;
     else { a.removeAttribute('target'); a.href = '#precios'; }
   });
+  document.querySelectorAll('.js-test').forEach(function (a) { a.href = 'test.html' + (ref ? '?ref=' + encodeURIComponent(ref) : ''); });
   document.getElementById('anio').textContent = new Date().getFullYear();
   var c = WEB.contacto, links = [];
   if (c.whatsapp) links.push('<a href="https://wa.me/' + c.whatsapp + '" target="_blank" rel="noopener">WhatsApp · ' + c.whatsapp.slice(2).replace(/(\d{3})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4') + '</a>');
