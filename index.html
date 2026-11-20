@@ -94,19 +94,34 @@
 
   if (!k) { pedirEnlace(); return; }
 
-  var lento = setTimeout(function () { texto.textContent = 'Un momento, ya casi está…'; }, 6000);
+  // Guarda la puerta de la app en el móvil para abrir rápido y sin conexión.
+  if ('serviceWorker' in navigator) { try { navigator.serviceWorker.register('sw.js').catch(function () {}); } catch (e) {} }
 
-  fetch(SERVIDOR + '?html=1&k=' + encodeURIComponent(k), { credentials: 'omit', redirect: 'follow', cache: 'no-store' })
+  var lento = setTimeout(function () { texto.textContent = 'Un momento, ya casi está…'; }, 6000);
+  var CLAVE_HTML = 'fp_html_' + k, guardada = '';
+  try { guardada = localStorage.getItem(CLAVE_HTML) || ''; } catch (e) {}
+
+  function mostrar(html) {
+    // Se mantienen el icono y el modo app también dentro de la app ya cargada.
+    html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, function (h) { return h + CABECERA; }) : CABECERA + html;
+    document.open();
+    document.write(html);
+    document.close();
+  }
+
+  // Siempre se pide la versión nueva y se guarda para la próxima vez.
+  var nueva = fetch(SERVIDOR + '?html=1&k=' + encodeURIComponent(k), { credentials: 'omit', redirect: 'follow', cache: 'no-store' })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
     .then(function (html) {
-      clearTimeout(lento);
       if (html.indexOf('<html') < 0) throw new Error('Respuesta inesperada');
-      // Se mantienen el icono y el modo app también dentro de la app ya cargada.
-      html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, function (h) { return h + CABECERA; }) : CABECERA + html;
-      document.open();
-      document.write(html);
-      document.close();
-    })
+      try { localStorage.setItem(CLAVE_HTML, html); } catch (e) {}
+      return html;
+    });
+
+  // Si ya había una guardada, la app se abre al instante con ella (también sin conexión).
+  if (guardada.indexOf('<html') >= 0) { clearTimeout(lento); nueva.catch(function () {}); mostrar(guardada); return; }
+
+  nueva.then(function (html) { clearTimeout(lento); mostrar(html); })
     .catch(function () {
       clearTimeout(lento);
       error('No se ha podido cargar tu app. Revisa tu conexión a internet y vuelve a intentarlo.', true);
