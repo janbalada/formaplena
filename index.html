@@ -119,7 +119,13 @@
     });
 
   // Si ya había una guardada, la app se abre al instante con ella (también sin conexión).
-  if (guardada.indexOf('<html') >= 0) { clearTimeout(lento); nueva.catch(function () {}); mostrar(guardada); return; }
+  if (guardada.indexOf('<html') >= 0) {
+    clearTimeout(lento); nueva.catch(function () {});
+    // Se espera a que esta página termine de cargar: así la app la sustituye entera (si no, queda debajo de «Cargando…»).
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { mostrar(guardada); }, 0); });
+    else setTimeout(function () { mostrar(guardada); }, 0);
+    return;
+  }
 
   nueva.then(function (html) { clearTimeout(lento); mostrar(html); })
     .catch(function () {
