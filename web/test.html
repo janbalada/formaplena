@@ -108,6 +108,12 @@ var WHATSAPP = '34681193409';
 
 var ref = String(new URLSearchParams(location.search).get('ref') || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
 var R = { frena: [] }, paso = 0;
+// Embudo: apunta (sin datos personales) hasta qué paso llega cada visita, una vez por paso.
+var VISITA = Date.now().toString(36) + Math.random().toString(36).slice(2, 8), MARCADOS = {};
+function marca(p) {
+  if (MARCADOS[p]) return; MARCADOS[p] = 1;
+  try { fetch(SERVIDOR, { method: 'POST', credentials: 'omit', keepalive: true, body: JSON.stringify({ fn: 'testPaso', args: ['', VISITA, p, ref ? 'amigo' : 'web'] }) }).catch(function () {}); } catch (e) {}
+}
 function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function $(s) { return document.querySelector(s); }
 
@@ -132,6 +138,7 @@ var PASOS = [
 
 function pintar() {
   var p = PASOS[paso], h = '';
+  marca('p' + (paso + 1));
   $('#barra').style.width = Math.round((paso + 1) / (PASOS.length + 1) * 100) + '%';
   $('#cuenta').textContent = 'Paso ' + (paso + 1) + ' de ' + PASOS.length;
   if (paso === 0 && ref) h += '<div class="aviso-amigo">🎁 Vienes recomendado por un amigo.</div>';
@@ -216,6 +223,7 @@ function enviar() {
 }
 
 function resultado(r) {
+  marca('resultado');
   $('#barra').style.width = '100%';
   $('#cuenta').textContent = '¡Listo!';
   var urlForm = FORMULARIO + (ref ? '?usp=pp_url&' + CAMPO_AMIGO + '=' + encodeURIComponent(ref) : '');
@@ -236,6 +244,10 @@ function resultado(r) {
   $('#test').innerHTML = h;
   window.scrollTo(0, 0);
 }
+document.addEventListener('click', function (ev) {
+  var a = ev.target.closest('.final a'); if (!a) return;
+  marca(a.classList.contains('prin') ? 'formulario' : 'whatsapp');
+});
 pintar();
 </script>
 </body>
