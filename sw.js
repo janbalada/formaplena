@@ -27,7 +27,7 @@ self.addEventListener('fetch', function (e) {
   var u = new URL(e.request.url);
   if (e.request.method !== 'GET' || u.origin !== self.location.origin) return;
   var base = new URL('./', self.location).pathname;
-  if (u.pathname.indexOf(base + 'web/') === 0) return;
+  if (u.pathname.indexOf(base + 'web/') === 0 || u.pathname.indexOf(base + 'coach/') === 0) return;
   if (e.request.mode === 'navigate') {
     // Con red: la versión nueva (y se guarda). Sin red o muy lenta: la guardada.
     var red = fetch(e.request).then(function (r) {
