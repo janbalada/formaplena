@@ -150,7 +150,7 @@ function pintar() {
     }).join('') + '</div>';
   } else if (p.tipo === 'datos') {
     h += '<div class="opciones dos">' + ['Mujer', 'Hombre'].map(function (s) { return '<button type="button" class="op" data-sexo="' + s + '" aria-pressed="' + (R.sexo === s) + '"><span class="e">' + (s === 'Mujer' ? '👩' : '👨') + '</span><span>' + s + '</span></button>'; }).join('') + '</div>' +
-      '<div class="campos"><label class="campo">Edad<input id="edad" type="number" inputmode="numeric" min="14" max="90" placeholder="30" value="' + esc(R.edad || '') + '"></label>' +
+      '<div class="campos"><label class="campo">Edad<input id="edad" type="number" inputmode="numeric" min="16" max="90" placeholder="30" value="' + esc(R.edad || '') + '"></label>' +
       '<label class="campo">Altura (cm)<input id="altura" type="number" inputmode="numeric" min="130" max="220" placeholder="170" value="' + esc(R.altura || '') + '"></label>' +
       '<label class="campo">Peso (kg)<input id="peso" type="number" inputmode="decimal" min="35" max="250" placeholder="70" value="' + esc(R.peso || '') + '"></label></div>';
   } else if (p.tipo === 'dias') {
@@ -158,6 +158,7 @@ function pintar() {
   } else if (p.tipo === 'contacto') {
     h += '<div class="contacto"><label class="campo">Tu nombre<input id="nombre" type="text" autocomplete="given-name" maxlength="60" value="' + esc(R.nombre || '') + '"></label>' +
       '<label class="campo">Tu WhatsApp<input id="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="16" placeholder="600 000 000" value="' + esc(R.tel || '') + '"></label>' +
+      (+R.edad < 18 ? '<p class="nota">Como tienes ' + esc(R.edad) + ' años, para empezar tu plan necesitaremos la autorización de tu padre, madre o tutor. Jan lo hablará contigo.</p>' : '') +
       '<label class="permiso"><input id="acepto" type="checkbox"' + (R.acepto ? ' checked' : '') + '><span>Acepto que Jan, de Forma Plena Coaching, guarde estas respuestas y me escriba por WhatsApp sobre este test. Puedo pedir que se borren cuando quiera.</span></label></div>';
   }
   h += '<p class="error" id="error" role="alert"></p><div class="acciones">' + (paso ? '<button type="button" class="btn sec" id="atras">← Atrás</button>' : '') +
@@ -176,7 +177,8 @@ function validar() {
   if (p.tipo === 'datos') {
     if (!R.sexo) return 'Elige mujer u hombre.';
     var e = +R.edad, a = +R.altura, w = +String(R.peso).replace(',', '.');
-    if (!(e >= 14 && e <= 90)) return 'Escribe tu edad.';
+    if (e >= 1 && e < 16) return 'De momento trabajamos con personas de 16 años o más. ¡Te esperamos cuando los cumplas! 💪';
+    if (!(e >= 16 && e <= 90)) return 'Escribe tu edad.';
     if (!(a >= 130 && a <= 220)) return 'Escribe tu altura en centímetros (por ejemplo, 170).';
     if (!(w >= 35 && w <= 250)) return 'Escribe tu peso en kilos.';
   }
