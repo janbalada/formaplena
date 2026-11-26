@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Coaching online de entreno y nutrición con Jan Balada: rutina y dieta personalizadas en tu app, chat con tu entrenador y revisión semanal. 10 € al mes, sin permanencia.">
+<meta name="description" content="Coaching online de entreno y nutrición con Jan Balada: rutina y dieta personalizadas en tu app, chat con tu entrenador y revisión semanal. Planes desde 15 € al mes, sin permanencia.">
 <meta name="theme-color" content="#7C3AED">
 <meta property="og:title" content="Forma Plena Coaching">
-<meta property="og:description" content="Entrena con un plan hecho para ti. Rutina, dieta, app y chat con tu entrenador por 10 € al mes.">
+<meta property="og:description" content="Entrena con un plan hecho para ti. Rutina, dieta, app y chat con tu entrenador. Planes desde 15 € al mes.">
 <meta property="og:image" content="https://janbalada.github.io/formaplena/icons/icono-512.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -185,7 +185,7 @@ section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
 @media (max-width: 520px) { .incluye { grid-template-columns: 1fr; } }
 
 /* Precios */
-.planes { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: stretch; max-width: 880px; }
+.planes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: stretch; max-width: 1080px; }
 .plan.extra { background: var(--soft); border-style: dashed; }
 .contacto-links { display: flex; gap: 14px; flex-wrap: wrap; }
 .contacto-links a { color: inherit; font-weight: 700; text-decoration: none; }
@@ -199,7 +199,7 @@ section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
 .plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
 .plan li::before { content: "✓"; color: var(--ok); font-weight: 900; margin-right: 8px; }
 .plan .boton { justify-content: center; margin-top: 6px; }
-@media (max-width: 860px) { .planes { grid-template-columns: 1fr; max-width: 460px; } }
+@media (max-width: 900px) { .planes { grid-template-columns: 1fr; max-width: 460px; } }
 .nota-borrador { margin-top: 18px; font-size: 14px; color: var(--muted); background: var(--soft); border-radius: 14px; padding: 12px 16px; }
 
 /* Resultados (solo con permiso) */
@@ -328,8 +328,8 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var
     <section class="bloque" id="precios">
       <div class="cab-sec">
         <p class="etiqueta">Precios</p>
-        <h2>Un precio. Todo incluido.</h2>
-        <p>Sin permanencia: pagas mes a mes y lo dejas cuando quieras. Y si quieres entrenar conmigo en persona, lo reservas desde la app.</p>
+        <h2>Elige cómo quieres que te acompañe.</h2>
+        <p>IVA incluido y sin permanencia: pagas mes a mes y lo dejas cuando quieras. ¿No sabes cuál elegir? Haz el <a href="test.html">test gratis de 2 minutos</a> y te recomiendo el tuyo.</p>
       </div>
       <div class="planes" id="planes"></div>
       <p class="nota-borrador" id="nota-precios" hidden>Borrador: faltan tus precios. Cuando me los pases, los pongo aquí.</p>
@@ -355,8 +355,8 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var
         <details><summary>¿Y si tengo una lesión o una molestia?</summary><p>Nos lo cuentas en el formulario y lo tenemos en cuenta desde el primer día. Si algo te molesta durante un entreno, cambias el ejercicio en la app y tu entrenador lo revisa.</p></details>
         <details><summary>¿Y si no me gusta un ejercicio o la máquina está ocupada?</summary><p>Lo cambias tú desde la app: escribes el ejercicio que quieres y eliges entre los que tienen vídeo. Puedes cambiarlo solo para hoy o en tu rutina a partir de ahora, y tu entrenador recibe un aviso para revisarlo.</p></details>
         <details><summary>¿La dieta es muy estricta?</summary><p>Tienes varias opciones para cada comida y puedes cambiar alimentos por otros equivalentes. Si no quieres ver calorías, la app no te las enseña.</p></details>
-        <details><summary>¿Hay permanencia?</summary><p id="faq-permanencia">No. Son 10 € al mes y puedes dejarlo cuando quieras, sin penalizaciones.</p></details>
-        <details><summary>¿Puedo entrenar contigo en persona?</summary><p>Sí. Desde el apartado Reservas de la app eliges día y hora para un entreno presencial de 90 minutos donde tú prefieras (10 € la sesión, aparte de la cuota). También puedes reservar llamadas de 20 minutos para comentar cómo vas.</p></details>
+        <details><summary>¿Hay permanencia?</summary><p id="faq-permanencia">No. Pagas mes a mes y puedes dejarlo cuando quieras, sin penalizaciones.</p></details>
+        <details><summary>¿Puedo entrenar contigo en persona?</summary><p>De momento el seguimiento es online: chat, revisión de tu plan y videollamadas según el plan que elijas. Si más adelante abrimos entrenos presenciales, lo verás aquí.</p></details>
       </div>
     </section>
 
@@ -381,10 +381,12 @@ var WEB = {
   campoAmigo: 'entry.509349599',   // pregunta «¿Te ha recomendado alguien?» del formulario
   contacto: { whatsapp: '34681193409', email: 'janbaladacaudetd@gmail.com', instagram: '' },   // whatsapp: solo números con prefijo (p. ej. 34600000000) · instagram: sin @
   planes: [
-    { nombre: 'Plan completo', precio: 10, periodo: '/mes', detalle: 'Todo lo que necesitas para entrenar y comer con un plan hecho para ti.', destacado: true, sello: 'Sin permanencia',
-      incluye: ['Rutina y dieta personalizadas', 'App con vídeos y progresión', 'Chat y llamadas con tu entrenador', 'Revisión semanal y ajustes', 'Informe mensual de tu progreso', 'Calentamiento guiado, liga y retos del mes'] },
-    { nombre: 'Entreno presencial', precio: 10, periodo: '/sesión', detalle: 'Un extra opcional: entrenamos juntos donde tú elijas.', extra: true, boton: 'Ver cómo reservar',
-      incluye: ['90 minutos conmigo', 'En tu gimnasio, tu casa o al aire libre', 'Técnica, sesión completa o lo que quieras trabajar', 'Se reserva desde la app'] }
+    { nombre: 'Esencial', precio: 29, periodo: '/mes', detalle: 'Tu plan a medida y la app, con una revisión al mes.',
+      incluye: ['Rutina y pautas de alimentación a medida', 'App con vídeos y progresión', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h', '¿Solo entreno o solo nutrición? 15&nbsp;€/mes'] },
+    { nombre: 'Completo', precio: 49, periodo: '/mes', detalle: 'Entreno y nutrición, revisados contigo cada semana.', destacado: true, sello: 'El más elegido',
+      incluye: ['Rutina y pautas de alimentación a medida', 'Revisión cada domingo y ajustes', 'Chat con tu entrenador, respuesta en menos de 24 h', 'Videollamada de bienvenida', 'Informe mensual de tu progreso', 'Calentamiento guiado, liga y retos del mes'] },
+    { nombre: 'Premium', precio: 79, periodo: '/mes', detalle: 'El trato más cercano: hablamos cara a cara cada dos semanas.',
+      incluye: ['Todo lo del plan Completo', 'Videollamada contigo cada 15 días', 'Chat prioritario: respuesta el mismo día', 'Informe mensual comentado contigo', 'Plazas limitadas'] }
   ],
   resultados: []             // { nombre: 'Laura, 28', texto: '−6 kg y +20 kg en hip thrust en 3 meses' } (solo con permiso)
 };
