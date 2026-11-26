@@ -85,6 +85,15 @@ input[type=text], input[type=tel], input[type=number] { font: inherit; font-size
 .ej small { display: block; color: var(--muted); font-size: 13px; }
 .ej p { font-size: 14px; margin-top: 2px; }
 .lista-inc { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 15px; }
+.plan-reco { border: 2px solid var(--violeta); }
+.reco-et { margin: 0 0 4px; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--violeta); }
+.reco-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.reco-cab h3 { margin: 0; }
+.reco-precio { margin: 0; color: var(--muted); }
+.reco-precio b { font-family: var(--f-disp); font-size: 28px; color: var(--ink); }
+.otro { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+.otro small { display: block; color: var(--muted); font-size: 13px; }
+.otro span { font-weight: 700; white-space: nowrap; }
 .lista-inc li::before { content: "✓ "; color: var(--ok); font-weight: 800; }
 .final { display: grid; gap: 10px; margin-top: 18px; }
 .aviso-amigo { background: var(--soft); color: var(--violeta); border-radius: 14px; padding: 10px 14px; font-weight: 600; font-size: 14px; margin-bottom: 16px; }
@@ -117,6 +126,24 @@ function marca(p) {
 function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 function $(s) { return document.querySelector(s); }
 
+// Planes (propuesta del 25/11/2026, orientativa)
+var PLANES = {
+  'Esencial': { precio: '29 €', sub: 'Entreno y nutrición, con una revisión al mes', inc: ['Rutina y pautas de alimentación a medida', 'App con el vídeo de cada ejercicio y tu progreso', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h'] },
+  'Esencial · solo entreno': { precio: '15 €', sub: 'Tu entreno a medida, con una revisión al mes', inc: ['Rutina a medida', 'App con el vídeo de cada ejercicio y tu progreso', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h'] },
+  'Esencial · solo nutrición': { precio: '15 €', sub: 'Tus pautas de alimentación, con una revisión al mes', inc: ['Pautas de alimentación con opciones para elegir', 'Marca tus comidas en la app en un toque', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h'] },
+  'Completo': { precio: '49 €', sub: 'Entreno y nutrición, revisados contigo cada semana', inc: ['Rutina y pautas de alimentación a medida', 'Revisión cada domingo y ajustes según tu progreso', 'Chat con tu entrenador, respuesta en menos de 24 h', 'Videollamada de bienvenida de 20 minutos'] },
+  'Premium': { precio: '79 €', sub: 'El trato más cercano, con videollamada cada 15 días', inc: ['Todo lo del plan Completo', 'Videollamada contigo cada 15 días', 'Chat prioritario: respuesta el mismo día'] }
+};
+function recomendar(acomp, necesita) {
+  var r = { mes: 'Esencial', semana: 'Completo', cerca: 'Premium' }[acomp] || 'Completo';
+  if (r === 'Esencial' && necesita === 'entreno') r = 'Esencial · solo entreno';
+  if (r === 'Esencial' && necesita === 'nutricion') r = 'Esencial · solo nutrición';
+  return r;
+}
+function enHorario() {
+  try { var h = +new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', hour: 'numeric', hourCycle: 'h23' }).format(new Date()); return h >= 9 && h < 21; } catch (e) { return true; }
+}
+
 var PASOS = [
   { t: '¿Qué quieres conseguir?', s: 'Elige lo que más te importa ahora mismo.', campo: 'objetivo', ops: [
     ['grasa', '🔥', 'Perder grasa', 'Bajar de peso y sentirme más ligero'],
@@ -133,6 +160,12 @@ var PASOS = [
   { t: '¿Qué te ha frenado hasta ahora?', s: 'Puedes marcar varias.', campo: 'frena', multi: true, ops: [
     ['Falta de tiempo', '⏰', 'Falta de tiempo', ''], ['No sé qué hacer en el gimnasio', '🤔', 'No sé qué hacer', ''], ['No veo resultados', '📉', 'No veo resultados', ''],
     ['Me cuesta la dieta', '🍕', 'Me cuesta la dieta', ''], ['Lesiones o molestias', '🩹', 'Lesiones o molestias', ''], ['Me falta motivación', '😴', 'Me falta motivación', '']] },
+  { t: '¿Cómo quieres que te acompañe?', s: 'Así te recomendamos el plan que mejor te encaja.', campo: 'acomp', ops: [
+    ['mes', '🧭', 'Me organizo solo', 'Quiero un buen plan y revisarlo una vez al mes'],
+    ['semana', '📅', 'Que revisen mi progreso cada semana', 'Ajustes cada domingo y alguien pendiente'],
+    ['cerca', '🤝', 'Un trato muy cercano', 'Hablar con mi entrenador a menudo']] },
+  { t: '¿Qué necesitas?', s: 'Elige una opción.', campo: 'necesita', ops: [
+    ['entreno', '🏋️', 'Entreno', 'Rutina a medida con vídeos'], ['nutricion', '🥗', 'Nutrición', 'Pautas de alimentación con opciones'], ['ambos', '⚡', 'Los dos', 'Entreno y nutrición']] },
   { t: '¿A quién le enviamos tu resultado?', s: 'Te enseñamos tu estimación y tu primer entreno aquí mismo.', tipo: 'contacto' }
 ];
 
@@ -215,7 +248,7 @@ function enviar() {
   $('#cuenta').textContent = 'Casi listo';
   $('#test').innerHTML = '<div class="cargando"><div class="rueda"></div><h2>Preparando tu resultado…</h2><p>Estamos calculando tu estimación y diseñando un ejemplo de tu primer entreno. Tarda unos segundos.</p></div>';
   var datos = { nombre: R.nombre, tel: R.tel, acepto: R.acepto === true, objetivo: R.objetivo, sexo: R.sexo, edad: +R.edad, altura: +R.altura,
-    peso: +String(R.peso).replace(',', '.'), dias: R.dias, lugar: R.lugar, nivel: R.nivel, frena: R.frena.join(', '), ref: ref };
+    peso: +String(R.peso).replace(',', '.'), dias: R.dias, lugar: R.lugar, nivel: R.nivel, frena: R.frena.join(', '), acomp: R.acomp, necesita: R.necesita, ref: ref };
   fetch(SERVIDOR, { method: 'POST', credentials: 'omit', redirect: 'follow', body: JSON.stringify({ fn: 'testWeb', args: ['', datos] }) })
     .then(function (r) { return r.json(); })
     .then(function (j) { if (!j || !j.ok) throw new Error((j && j.error) || 'Error'); resultado(j.r); })
@@ -239,10 +272,15 @@ function resultado(r) {
       return '<div class="ej"><span class="n">' + (i + 1) + '</span><div><b>' + esc(e.nombre) + '</b><small>' + e.series + ' series × ' + esc(e.reps) + ' reps</small>' + (e.consejo ? '<p>' + esc(e.consejo) + '</p>' : '') + '</div></div>';
     }).join('');
   }
-  h += '</div><div class="tarjeta"><h3>Con tu plan completo tendrías</h3><ul class="lista-inc"><li>Tu rutina en la app, con vídeo de cada ejercicio</li><li>Tu dieta con opciones para elegir</li><li>Chat directo con tu entrenador</li><li>Revisión y ajustes cada semana</li></ul><p class="meta" style="margin:12px 0 0">10 € al mes · sin permanencia</p></div>' +
-    '<div class="final"><a class="btn prin" href="' + esc(urlForm) + '" target="_blank" rel="noopener">Quiero mi plan completo →</a>' +
+  var reco = (r.recomendado && PLANES[r.recomendado]) ? r.recomendado : recomendar(R.acomp, R.necesita), P = PLANES[reco];
+  var otros = ['Esencial', 'Completo', 'Premium'].filter(function (k) { return reco.indexOf(k) !== 0; });
+  h += '</div><div class="tarjeta plan-reco"><p class="reco-et">Tu plan recomendado</p><div class="reco-cab"><h3>' + esc(reco) + '</h3><p class="reco-precio"><b>' + P.precio + '</b>/mes</p></div>' +
+    '<p class="meta">' + esc(P.sub) + '</p><ul class="lista-inc">' + P.inc.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' +
+    '<div class="tarjeta"><h3>Otras opciones</h3>' + otros.map(function (k) { return '<div class="otro"><div><b>' + k + '</b><small>' + esc(PLANES[k].sub) + '</small></div><span>' + PLANES[k].precio + '/mes</span></div>'; }).join('') +
+    '<p class="meta" style="margin:10px 0 0">IVA incluido · sin permanencia</p></div>' +
+    '<div class="final"><a class="btn prin" href="' + esc(urlForm) + '" target="_blank" rel="noopener">Quiero el plan ' + esc(reco.split(' · ')[0]) + ' →</a>' +
     '<a class="btn sec" href="' + esc(wa) + '" target="_blank" rel="noopener">Prefiero hablar antes por WhatsApp</a></div>' +
-    '<p class="nota" style="text-align:center;margin-top:14px">Jan te escribirá en breve por WhatsApp.</p></section>';
+    '<p class="nota" style="text-align:center;margin-top:14px">' + (enHorario() ? 'Jan te escribirá por WhatsApp en unos minutos.' : 'Jan te escribirá por WhatsApp mañana a primera hora.') + '</p></section>';
   $('#test').innerHTML = h;
   window.scrollTo(0, 0);
 }
