@@ -269,7 +269,7 @@ function resultado(r) {
     '<div class="tarjeta"><h3>Tu semana: ' + esc(r.plan) + '</h3><p class="meta">Encaja con tus días y con lo que buscas.</p>';
   if (r.ejemplo && r.ejemplo.ejercicios && r.ejemplo.ejercicios.length) {
     h += '<p class="meta" style="margin-bottom:4px"><b>Ejemplo de tu primer entreno · ' + esc(r.ejemplo.nombre) + '</b></p>' + r.ejemplo.ejercicios.map(function (e, i) {
-      return '<div class="ej"><span class="n">' + (i + 1) + '</span><div><b>' + esc(e.nombre) + '</b><small>' + e.series + ' series × ' + esc(e.reps) + ' reps</small>' + (e.consejo ? '<p>' + esc(e.consejo) + '</p>' : '') + '</div></div>';
+      return '<div class="ej"><span class="n">' + (i + 1) + '</span><div><b>' + esc(e.nombre) + '</b><small>' + e.series + (+e.series === 1 ? ' serie' : ' series') + ' × ' + esc(e.reps) + (/^[\d\s–-]+$/.test(String(e.reps)) ? ' reps' : '') + '</small>' + (e.consejo ? '<p>' + esc(e.consejo) + '</p>' : '') + '</div></div>';
     }).join('');
   }
   var reco = (r.recomendado && PLANES[r.recomendado]) ? r.recomendado : recomendar(R.acomp, R.necesita), P = PLANES[reco];
