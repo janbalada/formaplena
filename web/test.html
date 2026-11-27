@@ -141,7 +141,7 @@ function recomendar(acomp, necesita) {
   return r;
 }
 function enHorario() {
-  try { var h = +new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', hour: 'numeric', hourCycle: 'h23' }).format(new Date()); return h >= 9 && h < 21; } catch (e) { return true; }
+  try { var h = +new Intl.DateTimeFormat('es-ES', { timeZone: 'Europe/Madrid', hour: 'numeric', hourCycle: 'h23' }).format(new Date()); return h >= 7 && h < 22; } catch (e) { return true; }
 }
 
 var PASOS = [
