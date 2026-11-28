@@ -174,13 +174,20 @@ section[id], main[id] { scroll-margin-top: 84px; }
 section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
 .bloque .cab-sec { display: grid; gap: 12px; max-width: 640px; margin-bottom: 40px; }
 .bloque .cab-sec p { color: var(--muted); font-size: 18px; }
+/* Etiqueta de sección en pastilla roja (diseño 28/11/2026) */
+.bloque .cab-sec .etiqueta, .portada .etiqueta { display: inline-block; justify-self: start; font-weight: 800; background: var(--rojo); color: #FAF7F7; font-size: 15px; letter-spacing: .02em; padding: 7px 18px; border-radius: 999px; line-height: 1.2; }
 
 /* Método: es un proceso real, por eso va numerado */
 .pasos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: paso; }
-.pasos li { counter-increment: paso; display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 3px solid var(--line); }
-.pasos li::before { content: counter(paso); font-family: var(--f-disp); font-weight: 900; font-size: 40px; line-height: 1; background: var(--grad-txt); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.pasos li { counter-increment: paso; display: grid; gap: 10px; align-content: start; padding-top: 30px; background-repeat: no-repeat; background-size: 100% 4px; background-position: 0 0; }
+.pasos li:nth-child(1) { background-image: linear-gradient(90deg, #FAF7F7 0% 22.75%, transparent 22.75% 25.75%, #4A3B3C 25.75% 48.5%, transparent 48.5% 51.5%, #4A3B3C 51.5% 74.25%, transparent 74.25% 77.25%, #4A3B3C 77.25% 100%); }
+.pasos li:nth-child(2) { background-image: linear-gradient(90deg, #4A3B3C 0% 22.75%, transparent 22.75% 25.75%, #FAF7F7 25.75% 48.5%, transparent 48.5% 51.5%, #4A3B3C 51.5% 74.25%, transparent 74.25% 77.25%, #4A3B3C 77.25% 100%); }
+.pasos li:nth-child(3) { background-image: linear-gradient(90deg, #4A3B3C 0% 22.75%, transparent 22.75% 25.75%, #4A3B3C 25.75% 48.5%, transparent 48.5% 51.5%, #FAF7F7 51.5% 74.25%, transparent 74.25% 77.25%, #4A3B3C 77.25% 100%); }
+.pasos li:nth-child(4) { background-image: linear-gradient(90deg, #4A3B3C 0% 22.75%, transparent 22.75% 25.75%, #4A3B3C 25.75% 48.5%, transparent 48.5% 51.5%, #4A3B3C 51.5% 74.25%, transparent 74.25% 77.25%, #FAF7F7 77.25% 100%); }
+.pasos li::before { content: counter(paso); font-family: var(--f-disp); font-weight: 900; font-size: 40px; line-height: 1; color: var(--ink); }
 .pasos li p { color: var(--muted); font-size: 15px; }
-.pasos .cuando { font-size: 13px; font-weight: 700; color: var(--ink); }
+.pasos .cuando { font-size: 13px; font-weight: 700; color: var(--ink); justify-self: start; }
+.pasos li:first-child .cuando { background: var(--rojo); color: #FAF7F7; padding: 3px 14px; border-radius: 999px; }
 @media (max-width: 860px) { .pasos { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 520px) { .pasos { grid-template-columns: 1fr; } }
 
