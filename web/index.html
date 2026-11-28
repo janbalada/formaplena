@@ -95,12 +95,16 @@ a { color: inherit; }
 /* Menú anclado arriba al hacer scroll (28/11/2026) */
 html, body { overflow-x: clip; }
 /* 28/11/2026: menú flotante, translúcido y con un ligero brillo abajo para separarlo del fondo */
-.cab { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; isolation: isolate; clip-path: inset(0 -100vmax -48px); }
-.cab::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%); z-index: -1; background: rgba(30, 21, 22, .82); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); box-shadow: 0 12px 28px -14px rgba(0, 0, 0, .75); }
-.cab::after { content: ""; position: absolute; left: 50%; width: 100vw; transform: translateX(-50%); bottom: 0; height: 1px; z-index: -1; background: linear-gradient(90deg, rgba(211, 171, 172, 0), rgba(211, 171, 172, .45) 30%, rgba(231, 198, 107, .35) 50%, rgba(211, 171, 172, .45) 70%, rgba(211, 171, 172, 0)); }
+.cab { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); z-index: 30; margin: 12px -28px 8px; padding: 14px 28px; border-radius: 18px;
+  background: rgba(37, 27, 28, .92); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid rgba(250, 247, 247, .05);
+  box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .7), 0 6px 34px -6px rgba(211, 171, 172, .14), 0 0 22px rgba(211, 171, 172, .05), inset 0 1px 0 rgba(250, 247, 247, .05); }
+/* Franja de arriba para que el contenido no se vea por encima del menú flotante */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: calc(env(safe-area-inset-top, 0px) + 12px); background: var(--bg); z-index: 29; pointer-events: none; }
+@media (max-width: 1180px) { .cab { margin-inline: -12px; padding-inline: 14px; } }
 section[id], main[id] { scroll-margin-top: 84px; }
 @media (max-width: 720px) {
-  .cab { flex-wrap: wrap; row-gap: 8px; padding-block: 12px 10px; }
+  .cab { flex-wrap: wrap; row-gap: 8px; padding-block: 12px 10px; margin-top: 8px; top: calc(env(safe-area-inset-top, 0px) + 8px); border-radius: 16px; }
   .cab-btns { gap: 6px; }
   .cab-btn { min-height: 36px; padding: 6px 12px; font-size: 13px; }
   .marca { font-size: 17px; gap: 8px; }
