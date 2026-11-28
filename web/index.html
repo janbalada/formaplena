@@ -449,7 +449,7 @@ var WEB = {
     else { a.removeAttribute('target'); a.href = '#precios'; }
   });
   // «Contáctame»: abre WhatsApp con un mensaje ya escrito para Jan
-  document.querySelectorAll('.js-wa').forEach(function (a) { if (WEB.contacto.whatsapp) a.href = 'https://wa.me/' + WEB.contacto.whatsapp + '?text=' + encodeURIComponent('¡Hola Jan! He visto tu web de Forma Plena (https://janbalada.github.io/formaplena/web/). Me gustaría saber más sobre tus servicios, ¿me cuentas cómo funciona?'); });
+  document.querySelectorAll('.js-wa').forEach(function (a) { if (WEB.contacto.whatsapp) a.href = 'https://wa.me/' + WEB.contacto.whatsapp + '?text=' + encodeURIComponent('¡Hola Jan! 👋 He visto tu web de Forma Plena (https://janbalada.github.io/formaplena/web/). Me gustaría saber más sobre tus servicios, ¿me cuentas cómo funciona? 💪'); });
   document.querySelectorAll('.js-test').forEach(function (a) { a.href = 'https://janbalada.github.io/formaplena/web/test.html' + (ref ? '?ref=' + encodeURIComponent(ref) : ''); });
   document.getElementById('anio').textContent = new Date().getFullYear();
   var c = WEB.contacto, links = [];
