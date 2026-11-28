@@ -54,12 +54,23 @@ a { color: inherit; }
 .cab nav { display: flex; gap: 22px; font-weight: 600; font-size: 15px; }
 .cab nav a { text-decoration: none; color: var(--muted); }
 .cab nav a:hover { color: var(--ink); }
+/* Botones de la barra (28/11/2026): Prueba (test gratis) y Contáctame (WhatsApp de Jan) */
+.cab-btns { display: flex; gap: 8px; flex: none; }
+.cab-btn { display: inline-flex; align-items: center; min-height: 40px; padding: 8px 16px; border-radius: 999px; font-family: var(--f-disp); font-weight: 800; font-size: 14px; text-decoration: none; transition: background .15s ease; }
+.cab-btn.blanco { background: #FAF7F7; color: #1E1516; }
+.cab-btn.blanco:hover { background: #E6CFD0; }
+.cab-btn.rojo { background: var(--rojo); color: #FAF7F7; }
+.cab-btn.rojo:hover { background: #5A0A0D; }
 /* Menú anclado arriba al hacer scroll (28/11/2026) */
 .cab { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); box-shadow: 0 0 0 100vmax var(--bg), 0 1px 0 100vmax var(--line); clip-path: inset(0 -100vmax -1px); }
 section[id], main[id] { scroll-margin-top: 84px; }
 @media (max-width: 720px) {
   .cab { flex-wrap: wrap; row-gap: 8px; padding-block: 12px 10px; }
-  .cab nav { width: 100%; gap: 18px; font-size: 14px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .cab-btns { gap: 6px; }
+  .cab-btn { min-height: 36px; padding: 6px 12px; font-size: 13px; }
+  .marca { font-size: 17px; gap: 8px; }
+  .marca i { width: 30px; height: 30px; font-size: 15px; }
+  .cab nav { order: 3; width: 100%; gap: 18px; font-size: 14px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
   .cab nav::-webkit-scrollbar { display: none; }
   section[id], main[id] { scroll-margin-top: 104px; }
 }
@@ -249,6 +260,10 @@ footer { padding-block: 28px 40px; border-top: 1px solid var(--line); color: var
     <nav aria-label="Secciones">
       <a href="#metodo">Método</a><a href="#incluye">Qué incluye</a><a href="#precios">Precios</a><a href="#preguntas">Preguntas</a>
     </nav>
+    <div class="cab-btns">
+      <a class="cab-btn blanco js-test" href="https://janbalada.github.io/formaplena/web/test.html" target="_blank" rel="noopener">Prueba</a>
+      <a class="cab-btn rojo js-wa" href="https://wa.me/34681193409" target="_blank" rel="noopener">Contáctame</a>
+    </div>
   </header>
 
   <main id="inicio">
@@ -433,6 +448,8 @@ var WEB = {
     if (WEB.formulario) a.href = urlForm;
     else { a.removeAttribute('target'); a.href = '#precios'; }
   });
+  // «Contáctame»: abre WhatsApp con un mensaje ya escrito para Jan
+  document.querySelectorAll('.js-wa').forEach(function (a) { if (WEB.contacto.whatsapp) a.href = 'https://wa.me/' + WEB.contacto.whatsapp + '?text=' + encodeURIComponent('¡Hola Jan! 👋 He visto la web de Forma Plena y me gustaría saber más sobre tus planes.'); });
   document.querySelectorAll('.js-test').forEach(function (a) { a.href = 'https://janbalada.github.io/formaplena/web/test.html' + (ref ? '?ref=' + encodeURIComponent(ref) : ''); });
   document.getElementById('anio').textContent = new Date().getFullYear();
   var c = WEB.contacto, links = [];
