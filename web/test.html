@@ -113,6 +113,7 @@ input[type=text], input[type=tel], input[type=number] { font: inherit; font-size
 var SERVIDOR = 'https://script.google.com/macros/s/AKfycbxoK5CtWp-VxVcLKB381XKj5cmmEpdNoK5os1zFFQd_FFPTUeZmptooGCfGiAjuO016xg/exec';
 var FORMULARIO = 'https://docs.google.com/forms/d/e/1FAIpQLSfL1sSyGomZbEYxWkbrbjEIVHqMYTNbC_KUMqLSBntRvlw08g/viewform';
 var CAMPO_AMIGO = 'entry.509349599';
+var CAMPO_TEST = 'entry.1856085398', CAMPO_CODIGO = 'entry.1947545998';
 var WHATSAPP = '34681193409';
 
 var ref = String(new URLSearchParams(location.search).get('ref') || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40);
@@ -261,7 +262,8 @@ function resultado(r) {
   marca('resultado');
   $('#barra').style.width = '100%';
   $('#cuenta').textContent = '¡Listo!';
-  var urlForm = FORMULARIO + (ref ? '?usp=pp_url&' + CAMPO_AMIGO + '=' + encodeURIComponent(ref) : '');
+  // 28/11/2026: el formulario se abre sabiendo que ya ha hecho el test (se salta los datos básicos)
+  var urlForm = FORMULARIO + '?usp=pp_url&' + CAMPO_TEST + '=' + encodeURIComponent('Sí') + (r.id ? '&' + CAMPO_CODIGO + '=' + encodeURIComponent(r.id) : '') + (ref ? '&' + CAMPO_AMIGO + '=' + encodeURIComponent(ref) : '');
   var wa = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent('Hola Jan, soy ' + R.nombre + '. He hecho el test de Forma Plena y me gustaría saber más.');
   var h = '<section class="paso on"><div class="res-hero"><small>' + esc(R.nombre) + ', este es tu punto de partida</small><h2>' + esc(r.objetivo) + '</h2>' +
     '<div class="cifras"><div><b>' + r.kcal.toLocaleString('es-ES') + '</b>kcal al día, aprox.</div><div><b>' + r.prot + ' g</b>de proteína al día</div></div></div>' +
