@@ -225,6 +225,15 @@ section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
 .plan ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; }
 .plan li::before { content: "✓"; color: var(--ok); font-weight: 900; margin-right: 8px; }
 .plan .boton { justify-content: center; margin-top: 6px; }
+/* Esencial ↔ Basic dentro de la misma tarjeta (28/11/2026) */
+.plan-tog { display: flex; align-items: center; gap: 10px; }
+.plan-tog button { font: inherit; font-family: var(--f-disp); font-weight: 800; font-size: 17px; padding: 5px 14px; min-height: 36px; border: 0; border-radius: 999px; background: none; color: var(--muted); cursor: pointer; }
+.plan-tog button.on { background: var(--rojo); color: #FAF7F7; }
+.plan-tog button:not(.on):hover { color: var(--ink); }
+.plan-tog-sep { width: 2px; height: 24px; background: var(--ink); border-radius: 2px; }
+.plan-partes { display: flex; flex-wrap: wrap; gap: 6px; }
+.plan-partes button { font: inherit; font-size: 14px; font-weight: 700; padding: 7px 14px; min-height: 36px; border-radius: 999px; border: 1.5px solid var(--line); background: none; color: var(--ink); cursor: pointer; }
+.plan-partes button.on { border-color: #B97A7D; background: var(--soft); }
 @media (max-width: 900px) { .planes { grid-template-columns: 1fr; max-width: 460px; } }
 .nota-borrador { margin-top: 18px; font-size: 14px; color: var(--muted); background: var(--soft); border-radius: 14px; padding: 12px 16px; }
 
@@ -412,8 +421,15 @@ var WEB = {
   campoAmigo: 'entry.509349599',   // pregunta «¿Te ha recomendado alguien?» del formulario
   contacto: { whatsapp: '34681193409', email: 'janbaladacaudetd@gmail.com', instagram: '' },   // whatsapp: solo números con prefijo (p. ej. 34600000000) · instagram: sin @
   planes: [
-    { nombre: 'Esencial', precio: 29, periodo: '/mes', detalle: 'Tu plan a medida y la app, con una revisión al mes.',
-      incluye: ['Rutina y pautas de alimentación a medida', 'App con vídeos y progresión', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h', '¿Solo entreno o solo nutrición? 15&nbsp;€/mes'] },
+    { nombre: 'Esencial', variantes: [
+      { nombre: 'Esencial', precio: 29, periodo: '/mes', detalle: 'Tu plan a medida y la app, con una revisión al mes.',
+        incluye: ['Rutina y pautas de alimentación a medida', 'App con vídeos y progresión', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h'] },
+      { nombre: 'Basic', precio: 15, periodo: '/mes', detalle: 'Solo una parte del plan, a mitad de precio: elige entreno o nutrición.',
+        partes: [
+          { nombre: 'Solo entreno', incluye: ['Rutina a medida', 'App con el vídeo de cada ejercicio y progresión', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h'] },
+          { nombre: 'Solo nutrición', incluye: ['Pautas de alimentación a medida, con opciones', 'Marca tus comidas en la app en un toque', 'Revisión de tu plan cada 4 semanas', 'Chat para dudas, respuesta en 48 h'] }
+        ] }
+    ] },
     { nombre: 'Completo', precio: 49, periodo: '/mes', detalle: 'Entreno y nutrición, revisados contigo cada semana.', destacado: true, sello: 'El más elegido',
       incluye: ['Rutina y pautas de alimentación a medida', 'Revisión cada domingo y ajustes', 'Chat con tu entrenador, respuesta en menos de 24 h', 'Videollamada de bienvenida', 'Informe mensual de tu progreso', 'Calentamiento guiado, liga y retos del mes'] },
     { nombre: 'Premium', precio: 79, periodo: '/mes', detalle: 'El trato más cercano: hablamos cara a cara cada dos semanas.',
@@ -423,13 +439,30 @@ var WEB = {
 };
 
 (function () {
-  var faltanPrecios = WEB.planes.some(function (p) { return p.precio === null; });
-  document.getElementById('planes').innerHTML = WEB.planes.map(function (p) {
-    return '<div class="plan' + (p.destacado ? ' destacado' : '') + (p.extra ? ' extra' : '') + '">' + (p.sello ? '<span class="sello">' + p.sello + '</span>' : '') +
-      '<h3>' + p.nombre + '</h3><p class="precio' + (p.precio === null ? ' hueco' : '') + '">' + (p.precio === null ? '— €' : p.precio + ' €') + '<small> ' + p.periodo + '</small></p>' +
-      '<p style="color:var(--muted)">' + p.detalle + '</p><ul>' + p.incluye.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +
-      (p.extra ? '<a class="boton secundario" href="#preguntas">' + p.boton + '</a>' : '<a class="boton principal js-formulario" href="#" target="_blank" rel="noopener">Empezar</a>') + '</div>';
-  }).join('');
+  var faltanPrecios = WEB.planes.some(function (p) { return !p.variantes && p.precio === null; });
+  // Tarjetas de planes. El Esencial tiene dos versiones: Esencial (29 €) y Basic (15 €, solo entreno o solo nutrición).
+  function htmlPlan(p) {
+    var vi = p.vSel || 0, v = p.variantes ? p.variantes[vi] : p, pi = v.pSel || 0;
+    var cab = p.variantes
+      ? '<div class="plan-tog" role="group" aria-label="Versión del plan">' + p.variantes.map(function (x, i) { return '<button type="button" class="' + (i === vi ? 'on' : '') + '" data-pv="' + i + '" aria-pressed="' + (i === vi) + '">' + x.nombre + '</button>'; }).join('<span class="plan-tog-sep" aria-hidden="true"></span>') + '</div>'
+      : '<h3>' + p.nombre + '</h3>';
+    var partes = v.partes ? '<div class="plan-partes" role="group" aria-label="Qué parte quieres">' + v.partes.map(function (x, i) { return '<button type="button" class="' + (i === pi ? 'on' : '') + '" data-pp="' + i + '" aria-pressed="' + (i === pi) + '">' + x.nombre + '</button>'; }).join('') + '</div>' : '';
+    var inc = v.partes ? v.partes[pi].incluye : v.incluye;
+    return (p.sello ? '<span class="sello">' + p.sello + '</span>' : '') + cab +
+      '<p class="precio' + (v.precio === null ? ' hueco' : '') + '">' + (v.precio === null ? '— €' : v.precio + ' €') + '<small> ' + v.periodo + '</small></p>' +
+      '<p style="color:var(--muted)">' + v.detalle + '</p>' + partes + '<ul>' + inc.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+      (p.extra ? '<a class="boton secundario" href="#preguntas">' + p.boton + '</a>' : '<a class="boton principal js-formulario" href="#" target="_blank" rel="noopener">Empezar</a>');
+  }
+  var cajaPlanes = document.getElementById('planes');
+  cajaPlanes.innerHTML = WEB.planes.map(function (p, i) { return '<div class="plan' + (p.destacado ? ' destacado' : '') + (p.extra ? ' extra' : '') + '" data-plan="' + i + '">' + htmlPlan(p) + '</div>'; }).join('');
+  cajaPlanes.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pv],[data-pp]'); if (!b) return;
+    var card = b.closest('[data-plan]'), p = WEB.planes[+card.dataset.plan];
+    if (b.dataset.pv != null) p.vSel = +b.dataset.pv; else (p.variantes ? p.variantes[p.vSel || 0] : p).pSel = +b.dataset.pp;
+    card.innerHTML = htmlPlan(p);
+    card.querySelectorAll('.js-formulario').forEach(function (a) { if (window.FP_URL_FORM) a.href = window.FP_URL_FORM; });
+    var nb = card.querySelector(b.dataset.pv != null ? '[data-pv="' + b.dataset.pv + '"]' : '[data-pp="' + b.dataset.pp + '"]'); if (nb) nb.focus();
+  });
   document.getElementById('nota-precios').hidden = !faltanPrecios;
 
   // Sin resultados con permiso todavía: la sección no se enseña (28/11/2026)
@@ -444,6 +477,7 @@ var WEB = {
   try { ref = (new URLSearchParams(location.search).get('ref') || '').replace(/[^a-z0-9]/gi, '').toLowerCase(); if (ref) localStorage.setItem('fp_ref', ref); else ref = localStorage.getItem('fp_ref') || ''; } catch (e) {}
   var urlForm = WEB.formulario + (ref ? '?usp=pp_url&' + WEB.campoAmigo + '=' + encodeURIComponent(ref) : '');
   if (ref) { var av = document.createElement('div'); av.className = 'aviso-amigo'; av.textContent = '🎁 Vienes recomendado por un amigo: cuando te apuntes, ya saldrá su código en el formulario.'; document.body.insertBefore(av, document.body.firstChild); }
+  window.FP_URL_FORM = WEB.formulario ? urlForm : '';
   document.querySelectorAll('.js-formulario').forEach(function (a) {
     if (WEB.formulario) a.href = urlForm;
     else { a.removeAttribute('target'); a.href = '#precios'; }
