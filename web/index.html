@@ -417,6 +417,8 @@ var WEB = {
   }).join('');
   document.getElementById('nota-precios').hidden = !faltanPrecios;
 
+  // Sin resultados con permiso todavía: la sección no se enseña (28/11/2026)
+  document.getElementById('resultados').hidden = !WEB.resultados.length;
   var res = document.getElementById('lista-resultados');
   res.innerHTML = WEB.resultados.length
     ? WEB.resultados.map(function (r) { return '<div class="resultado" style="border-style:solid;text-align:left"><b>' + r.nombre + '</b>' + r.texto + '</div>'; }).join('')
