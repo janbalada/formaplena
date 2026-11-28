@@ -133,6 +133,8 @@ input[type=text], input[type=tel], input[type=number] { font: inherit; font-size
 var SERVIDOR = 'https://script.google.com/macros/s/AKfycbxoK5CtWp-VxVcLKB381XKj5cmmEpdNoK5os1zFFQd_FFPTUeZmptooGCfGiAjuO016xg/exec';
 var FORMULARIO = 'https://docs.google.com/forms/d/e/1FAIpQLSfL1sSyGomZbEYxWkbrbjEIVHqMYTNbC_KUMqLSBntRvlw08g/viewform';
 var CAMPO_AMIGO = 'entry.509349599';
+// 28/11/2026: el mismo formulario en catalán e inglés (las respuestas pasan solas al original)
+var FORMULARIO_IDIOMA = { ca: 'https://docs.google.com/forms/d/e/1FAIpQLSeW4MG0Th8a2h_ppaFUx4zUWbkN3qJdoDyQSjXEpi2ja3FBGg/viewform', en: 'https://docs.google.com/forms/d/e/1FAIpQLScSVbmBGKcsKGDr4Gg_6ap5Zvv-ferdiWkf2MDC0Aqatr3ZVg/viewform' };
 var CAMPO_TEST = 'entry.1856085398', CAMPO_CODIGO = 'entry.1947545998';
 var WHATSAPP = '34681193409';
 
@@ -308,7 +310,7 @@ function resultado(r) {
   $('#barra').style.width = '100%';
   $('#cuenta').textContent = t('¡Listo!');
   // 28/11/2026: el formulario se abre sabiendo que ya ha hecho el test (se salta los datos básicos)
-  var urlForm = FORMULARIO + '?usp=pp_url&' + CAMPO_TEST + '=' + encodeURIComponent('Sí') + (r.id ? '&' + CAMPO_CODIGO + '=' + encodeURIComponent(r.id) : '') + (ref ? '&' + CAMPO_AMIGO + '=' + encodeURIComponent(ref) : '');
+  var urlForm = (FORMULARIO_IDIOMA[LANG] || FORMULARIO) + '?usp=pp_url&' + CAMPO_TEST + '=' + encodeURIComponent({ ca: 'Sí', en: 'Yes' }[LANG] || 'Sí') + (r.id ? '&' + CAMPO_CODIGO + '=' + encodeURIComponent(r.id) : '') + (ref ? '&' + CAMPO_AMIGO + '=' + encodeURIComponent(ref) : '');
   var wa = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(t('Hola Jan, soy {nombre}. He hecho el test de Forma Plena y me gustaría saber más.').replace('{nombre}', R.nombre));
   var h = '<section class="paso on"><div class="res-hero"><small data-no-tr>' + t('{nombre}, este es tu punto de partida').replace('{nombre}', esc(R.nombre)) + '</small><h2>' + esc(t(r.objetivo)) + '</h2>' +
     '<div class="cifras"><div><b>' + r.kcal.toLocaleString(LANG === 'en' ? 'en-GB' : LANG + '-ES') + '</b><span>kcal al día, aprox.</span></div><div><b>' + r.prot + ' g</b><span>de proteína al día</span></div></div></div>' +

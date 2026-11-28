@@ -527,6 +527,8 @@ window.FP_TR = {"🎁 Vienes recomendado por un amigo: cuando te apuntes, ya sal
 // ------- Datos de la web: cámbialos aquí -------
 var WEB = {
   formulario: 'https://docs.google.com/forms/d/e/1FAIpQLSfL1sSyGomZbEYxWkbrbjEIVHqMYTNbC_KUMqLSBntRvlw08g/viewform',
+  // 28/11/2026: el mismo formulario en catalán e inglés (las respuestas pasan solas al original)
+  formularioIdioma: { ca: 'https://docs.google.com/forms/d/e/1FAIpQLSeW4MG0Th8a2h_ppaFUx4zUWbkN3qJdoDyQSjXEpi2ja3FBGg/viewform', en: 'https://docs.google.com/forms/d/e/1FAIpQLScSVbmBGKcsKGDr4Gg_6ap5Zvv-ferdiWkf2MDC0Aqatr3ZVg/viewform' },
   campoAmigo: 'entry.509349599',   // pregunta «¿Te ha recomendado alguien?» del formulario
   contacto: { whatsapp: '34681193409', email: 'janbaladacaudetd@gmail.com', instagram: '' },   // whatsapp: solo números con prefijo (p. ej. 34600000000) · instagram: sin @
   planes: [
@@ -638,7 +640,8 @@ var WEB = {
   // Si llega con el enlace de un cliente (?ref=codigo), el formulario se abre con su código ya puesto.
   var ref = '';
   try { ref = (new URLSearchParams(location.search).get('ref') || '').replace(/[^a-z0-9]/gi, '').toLowerCase(); if (ref) localStorage.setItem('fp_ref', ref); else ref = localStorage.getItem('fp_ref') || ''; } catch (e) {}
-  var urlForm = WEB.formulario + (ref ? '?usp=pp_url&' + WEB.campoAmigo + '=' + encodeURIComponent(ref) : '');
+  function urlFormIdioma() { return ((WEB.formularioIdioma || {})[window.FP_LANG] || WEB.formulario) + (ref ? '?usp=pp_url&' + WEB.campoAmigo + '=' + encodeURIComponent(ref) : ''); }
+  var urlForm = urlFormIdioma();
   if (ref) { var av = document.createElement('div'); av.className = 'aviso-amigo'; av.textContent = '🎁 Vienes recomendado por un amigo: cuando te apuntes, ya saldrá su código en el formulario.'; document.body.insertBefore(av, document.body.firstChild); }
   window.FP_URL_FORM = WEB.formulario ? urlForm : '';
   document.querySelectorAll('.js-formulario').forEach(function (a) {
@@ -646,7 +649,8 @@ var WEB = {
     else { a.removeAttribute('target'); a.href = '#precios'; }
   });
   // «Contáctame»: abre WhatsApp con un mensaje ya escrito para Jan
-  window.FP_AL_CAMBIAR_IDIOMA = function () { if (window.FP_ENLACES_TEST) window.FP_ENLACES_TEST(); document.querySelectorAll('.js-wa').forEach(function (a) { if (WEB.contacto.whatsapp) a.href = 'https://wa.me/' + WEB.contacto.whatsapp + '?text=' + encodeURIComponent(FP_T('¡Hola Jan! 👋 He visto tu web de Forma Plena (https://janbalada.github.io/formaplena/web/). Me gustaría saber más sobre tus servicios, ¿me cuentas cómo funciona? 💪')); }); };
+  window.FP_AL_CAMBIAR_IDIOMA = function () { if (window.FP_ENLACES_TEST) window.FP_ENLACES_TEST();
+    if (WEB.formulario) { window.FP_URL_FORM = urlFormIdioma(); document.querySelectorAll('.js-formulario').forEach(function (a) { a.href = window.FP_URL_FORM; }); } document.querySelectorAll('.js-wa').forEach(function (a) { if (WEB.contacto.whatsapp) a.href = 'https://wa.me/' + WEB.contacto.whatsapp + '?text=' + encodeURIComponent(FP_T('¡Hola Jan! 👋 He visto tu web de Forma Plena (https://janbalada.github.io/formaplena/web/). Me gustaría saber más sobre tus servicios, ¿me cuentas cómo funciona? 💪')); }); };
   window.FP_AL_CAMBIAR_IDIOMA();
   document.querySelectorAll('.js-idioma').forEach(function (sel) { sel.addEventListener('change', function () { FP_PONER_IDIOMA(sel.value, true); }); });
   FP_PONER_IDIOMA(FP_LANG);
