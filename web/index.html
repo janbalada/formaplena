@@ -55,7 +55,15 @@ a { color: inherit; }
 .cab nav { display: flex; gap: 22px; font-weight: 600; font-size: 15px; }
 .cab nav a { text-decoration: none; color: var(--muted); }
 .cab nav a:hover { color: var(--ink); }
-@media (max-width: 720px) { .cab nav { display: none; } }
+/* Menú anclado arriba al hacer scroll (28/11/2026) */
+.cab { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); box-shadow: 0 0 0 100vmax var(--bg), 0 1px 0 100vmax var(--line); clip-path: inset(0 -100vmax -1px); }
+section[id], main[id] { scroll-margin-top: 84px; }
+@media (max-width: 720px) {
+  .cab { flex-wrap: wrap; row-gap: 8px; padding-block: 12px 10px; }
+  .cab nav { width: 100%; gap: 18px; font-size: 14px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+  .cab nav::-webkit-scrollbar { display: none; }
+  section[id], main[id] { scroll-margin-top: 104px; }
+}
 
 /* Portada */
 .portada { display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; padding-block: 40px 72px; }
