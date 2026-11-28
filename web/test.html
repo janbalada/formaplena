@@ -59,9 +59,17 @@ p { margin: 0; }
 .op:hover { border-color: #5A4243; }
 .op:focus-visible, .btn:focus-visible, input:focus-visible { outline: 3px solid var(--naranja); outline-offset: 2px; }
 .campos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
-label.campo { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 600; min-width: 0; }
+.campo { display: grid; gap: 4px; font-size: 13px; color: var(--muted); font-weight: 600; min-width: 0; }
 input[type=text], input[type=tel], input[type=number] { font: inherit; font-size: 17px; color: var(--ink); background: var(--surface); border: 2px solid var(--line); border-radius: 14px; padding: 12px 14px; width: 100%; min-width: 0; }
 .contacto { display: grid; gap: 12px; }
+.tel-caja { display: flex; align-items: stretch; background: var(--surface); border: 2px solid var(--line); border-radius: 14px; min-width: 0; }
+.tel-caja:focus-within { border-color: #B97A7D; }
+.tel-pref { position: relative; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-right: 2px solid var(--line); flex: none; font-size: 17px; font-weight: 700; color: var(--ink); }
+.tel-pref svg { width: 12px; height: 12px; flex: none; }
+.tel-pref select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px; }
+.tel-pref:has(select:focus-visible) { outline: 3px solid var(--naranja); outline-offset: 2px; border-radius: 12px 0 0 12px; }
+.tel-caja input[type=tel] { border: 0; background: transparent; border-radius: 0 14px 14px 0; flex: 1; }
+.tel-caja input[type=tel]:focus-visible { outline: none; }
 .permiso { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--muted); margin-top: 4px; }
 .permiso input { width: 20px; height: 20px; margin-top: 2px; flex: none; accent-color: #800E13; }
 .acciones { display: flex; gap: 10px; margin-top: 24px; }
@@ -199,7 +207,9 @@ function pintar() {
     h += '<div class="opciones cinco">' + [2, 3, 4, 5, 6].map(function (d) { return '<button type="button" class="op" data-dias="' + d + '" aria-pressed="' + (R.dias === d) + '">' + d + '</button>'; }).join('') + '</div><p class="nota">días por semana</p>';
   } else if (p.tipo === 'contacto') {
     h += '<div class="contacto"><label class="campo">Tu nombre<input id="nombre" type="text" autocomplete="given-name" maxlength="60" value="' + esc(R.nombre || '') + '"></label>' +
-      '<label class="campo">Tu WhatsApp<input id="tel" type="tel" autocomplete="tel" inputmode="tel" maxlength="16" placeholder="600 000 000" value="' + esc(R.tel || '') + '"></label>' +
+      '<div class="campo"><label for="tel">Tu WhatsApp</label><div class="tel-caja"><div class="tel-pref"><span id="pref-ver">+' + esc(R.pref || '34') + '</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 3.5h9L6 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>' +
+      '<select id="pref" aria-label="Prefijo del país" autocomplete="tel-country-code">' + PREFIJOS.map(function (x) { return '<option value="' + x[2] + '"' + (x[0] === (R.prefPais || 'España') ? ' selected' : '') + '>' + x[1] + ' ' + x[0] + ' +' + x[2] + '</option>'; }).join('') + '</select></div>' +
+      '<input id="tel" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="18" placeholder="' + ((R.pref || '34') === '34' ? '6xx xxx xxx' : 'Número') + '" value="' + esc(R.tel || '') + '"></div></div>' +
       (+R.edad < 18 ? '<p class="nota">Como tienes ' + esc(R.edad) + ' años, para empezar tu plan necesitaremos la autorización de tu padre, madre o tutor. Jan lo hablará contigo.</p>' : '') +
       '<label class="permiso"><input id="acepto" type="checkbox"' + (R.acepto ? ' checked' : '') + '><span>Acepto que Jan, de Forma Plena Coaching, guarde estas respuestas y me escriba por WhatsApp sobre este test. Puedo pedir que se borren cuando quiera.</span></label></div>';
   }
@@ -209,8 +219,26 @@ function pintar() {
   window.scrollTo(0, 0);
 }
 
+// Prefijos de país: [nombre, bandera, prefijo]
+var PREFIJOS = [['España','🇪🇸','34'],['Andorra','🇦🇩','376'],['Francia','🇫🇷','33'],['Portugal','🇵🇹','351'],['Italia','🇮🇹','39'],['Alemania','🇩🇪','49'],['Reino Unido','🇬🇧','44'],['Irlanda','🇮🇪','353'],['Países Bajos','🇳🇱','31'],['Bélgica','🇧🇪','32'],['Suiza','🇨🇭','41'],['Austria','🇦🇹','43'],['Suecia','🇸🇪','46'],['Noruega','🇳🇴','47'],['Dinamarca','🇩🇰','45'],['Finlandia','🇫🇮','358'],['Polonia','🇵🇱','48'],['Rumanía','🇷🇴','40'],['Bulgaria','🇧🇬','359'],['Ucrania','🇺🇦','380'],['Rusia','🇷🇺','7'],['Marruecos','🇲🇦','212'],['Argelia','🇩🇿','213'],['Estados Unidos','🇺🇸','1'],['Canadá','🇨🇦','1'],['México','🇲🇽','52'],['Argentina','🇦🇷','54'],['Colombia','🇨🇴','57'],['Chile','🇨🇱','56'],['Perú','🇵🇪','51'],['Venezuela','🇻🇪','58'],['Ecuador','🇪🇨','593'],['Bolivia','🇧🇴','591'],['Uruguay','🇺🇾','598'],['Paraguay','🇵🇾','595'],['Cuba','🇨🇺','53'],['República Dominicana','🇩🇴','1'],['Brasil','🇧🇷','55'],['China','🇨🇳','86'],['India','🇮🇳','91'],['Pakistán','🇵🇰','92']];
+document.addEventListener('change', function (ev) {
+  if (ev.target.id !== 'pref') return;
+  var sel = ev.target; R.pref = sel.value; R.prefPais = PREFIJOS[sel.selectedIndex][0];
+  document.getElementById('pref-ver').textContent = '+' + sel.value;
+  document.getElementById('tel').placeholder = sel.value === '34' ? '6xx xxx xxx' : 'Número';
+});
+// Número completo con prefijo (+34600000000). Si lo escriben ya con + o 00, se respeta.
+function telCompleto() {
+  var t = String(R.tel || '').trim(), d = t.replace(/\D/g, '');
+  if (/^\+/.test(t)) return '+' + d;
+  if (/^00/.test(d)) return '+' + d.slice(2);
+  var pf = R.pref || '34'; d = d.replace(/^0+/, '');
+  if (d.indexOf(pf) === 0 && d.length - pf.length >= 9) d = d.slice(pf.length);
+  return '+' + pf + d;
+}
 function guardarCampos() {
   ['edad', 'altura', 'peso', 'nombre', 'tel'].forEach(function (k) { var el = document.getElementById(k); if (el) R[k] = el.value.trim(); });
+  var pf = document.getElementById('pref'); if (pf) { R.pref = pf.value; R.prefPais = PREFIJOS[pf.selectedIndex][0]; }
   var a = document.getElementById('acepto'); if (a) R.acepto = a.checked;
 }
 function validar() {
@@ -227,7 +255,8 @@ function validar() {
   if (p.tipo === 'dias' && !R.dias) return 'Elige cuántos días.';
   if (p.tipo === 'contacto') {
     if (!R.nombre) return 'Escribe tu nombre.';
-    if (String(R.tel).replace(/\D/g, '').length < 9) return 'Escribe un WhatsApp válido.';
+    var tc = telCompleto().replace(/\D/g, '');
+    if (/^34/.test(tc) ? !/^34[6-9]\d{8}$/.test(tc) : (tc.length < 8 || tc.length > 15)) return 'Escribe un WhatsApp válido.';
     if (!R.acepto) return 'Marca la casilla para que podamos escribirte.';
   }
   return '';
@@ -256,7 +285,7 @@ function enviar() {
   $('#barra').style.width = '96%';
   $('#cuenta').textContent = 'Casi listo';
   $('#test').innerHTML = '<div class="cargando"><div class="rueda"></div><h2>Preparando tu resultado…</h2><p>Estamos calculando tu estimación y diseñando un ejemplo de tu primer entreno. Tarda unos segundos.</p></div>';
-  var datos = { nombre: R.nombre, tel: R.tel, acepto: R.acepto === true, objetivo: R.objetivo, sexo: R.sexo, edad: +R.edad, altura: +R.altura,
+  var datos = { nombre: R.nombre, tel: telCompleto(), acepto: R.acepto === true, objetivo: R.objetivo, sexo: R.sexo, edad: +R.edad, altura: +R.altura,
     peso: +String(R.peso).replace(',', '.'), dias: R.dias, lugar: R.lugar, nivel: R.nivel, frena: R.frena.join(', '), acomp: R.acomp, necesita: R.necesita, ref: ref };
   fetch(SERVIDOR, { method: 'POST', credentials: 'omit', redirect: 'follow', body: JSON.stringify({ fn: 'testWeb', args: ['', datos] }) })
     .then(function (r) { return r.json(); })
