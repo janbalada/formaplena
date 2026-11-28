@@ -116,7 +116,7 @@ input[type=text], input[type=tel], input[type=number] { font: inherit; font-size
 .ej-lista.plegada { max-height: 215px; }
 .ej-lista.plegada::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: linear-gradient(to bottom, rgba(40, 28, 29, 0), var(--surface) 85%); pointer-events: none; }
 .ver-mas-caja { display: flex; justify-content: center; margin-top: 6px; }
-.ver-mas { font: inherit; font-size: 16px; font-weight: 600; color: #1E1516; background: #FAF7F7; border: 0; border-radius: 999px; padding: 11px 48px; cursor: pointer; transition: background .15s ease; }
+.ver-mas { display: inline-block; text-decoration: none; font: inherit; font-size: 16px; font-weight: 600; color: #1E1516; background: #FAF7F7; border: 0; border-radius: 999px; padding: 11px 48px; cursor: pointer; transition: background .15s ease; }
 .ver-mas:hover { background: #E6CFD0; }
 .btn.borde { background: transparent; color: var(--ink); border: 2px solid var(--line); }
 .btn.borde:hover { border-color: #B97A7D; }
@@ -354,7 +354,7 @@ function resultado(r) {
     var muchos = r.ejemplo.ejercicios.length > 2;
     h += '<p class="meta" style="margin-bottom:4px" data-no-tr><b>' + t('Ejemplo de tu primer entreno · {nombre}').replace('{nombre}', esc(t(r.ejemplo.nombre))) + '</b></p><div class="ej-lista' + (muchos ? ' plegada' : '') + '" id="ej-lista">' + r.ejemplo.ejercicios.map(function (e, i) {
       return '<div class="ej"><span class="n">' + (i + 1) + '</span><div data-no-tr><b>' + esc(e.nombre) + '</b><small>' + e.series + ' ' + t(+e.series === 1 ? 'serie' : 'series') + ' × ' + esc(e.reps) + (/^[\d\s–-]+$/.test(String(e.reps)) ? ' reps' : '') + '</small>' + (e.consejo ? '<p>' + esc(e.consejo) + '</p>' : '') + '</div></div>';
-    }).join('') + '</div>' + (muchos ? '<div class="ver-mas-caja"><button type="button" class="ver-mas" id="ver-mas" aria-expanded="false" aria-controls="ej-lista">' + t('Ver más') + '</button></div>' : '');
+    }).join('') + '</div>' + (muchos ? '<div class="ver-mas-caja"><a class="ver-mas js-ver-mas" href="#" target="_blank" rel="noopener">' + t('Ver más') + '</a></div>' : '');
   }
   var reco = (r.recomendado && PLANES[r.recomendado]) ? r.recomendado : recomendar(R.acomp, R.necesita), P = PLANES[reco];
   var otros = ['Esencial', 'Completo', 'Premium'].filter(function (k) { return reco.indexOf(k) !== 0; });
@@ -370,6 +370,10 @@ function resultado(r) {
     '<p class="nota" style="text-align:center;margin-top:14px">' + (enHorario() ? 'Jan te escribirá por WhatsApp en unos minutos.' : 'Jan te escribirá por WhatsApp mañana a primera hora.') + '</p></section>';
   $('#test').innerHTML = h;
   traducir($('#test'));
+  // 28/11/2026: «Ver más» no despliega: abre WhatsApp con Jan, con el plan recomendado
+  var vmEl = document.querySelector('.js-ver-mas');
+  if (vmEl) vmEl.href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(t('¡Hola Jan! Soy {nombre}, vengo de la web de Forma Plena (https://janbalada.github.io/formaplena/web/) y me interesaría saber más sobre el Plan {plan}. ¿Cuándo podemos hablar? Mi teléfono de contacto es {tel}')
+    .replace('{nombre}', R.nombre || '').replace('{plan}', t(reco)).replace('{tel}', telBonito(telCompleto())));
   window.scrollTo(0, 0);
 }
 // ---------- Todos los planes (igual que en la web) ----------
@@ -404,14 +408,7 @@ function htmlPlanT(p) {
     '<a class="btn prin js-plan-wa" href="https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener">' + t('Empezar') + '</a>';
 }
 document.addEventListener('click', function (ev) {
-  var vm = ev.target.closest('#ver-mas');
-  if (vm) {
-    var l = document.getElementById('ej-lista'), abierta = !l.classList.contains('plegada');
-    if (abierta) { l.style.maxHeight = l.scrollHeight + 'px'; requestAnimationFrame(function () { l.style.maxHeight = ''; l.classList.add('plegada'); }); l.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
-    else { l.style.maxHeight = l.scrollHeight + 'px'; l.classList.remove('plegada'); setTimeout(function () { l.style.maxHeight = 'none'; }, 460); }
-    vm.textContent = t(abierta ? 'Ver más' : 'Ver menos'); vm.setAttribute('aria-expanded', String(!abierta));
-    return;
-  }
+  if (ev.target.closest('.js-ver-mas')) { marca('whatsapp-vermas'); return; }
   var vp = ev.target.closest('#ver-planes');
   if (vp) {
     var cj = document.getElementById('planes-todos'); cj.hidden = !cj.hidden;
