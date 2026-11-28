@@ -231,6 +231,7 @@ section.bloque { padding-block: 72px; border-top: 1px solid var(--line); }
 .preguntas summary::after { content: "+"; color: var(--violeta); font-size: 24px; line-height: 1; }
 .preguntas details[open] summary::after { content: "−"; }
 .preguntas details p { color: var(--muted); padding-bottom: 18px; max-width: 62ch; }
+.preguntas details p { box-sizing: border-box; overflow: hidden; }
 
 /* Cierre */
 .cierre { margin-block: 72px; border-radius: 28px; background: var(--grad); color: #fff; padding: clamp(32px, 6vw, 64px); display: grid; gap: 18px; justify-items: start; }
@@ -437,6 +438,30 @@ var WEB = {
   if (c.email) links.push('<a href="mailto:' + c.email + '">' + c.email + '</a>');
   if (c.instagram) links.push('<a href="https://instagram.com/' + c.instagram + '" target="_blank" rel="noopener">Instagram @' + c.instagram + '</a>');
   document.getElementById('contacto').innerHTML = links.length ? links.join('') : 'Contacto: pendiente';
+})();
+
+// Preguntas frecuentes: se abren y cierran deslizando hacia abajo (28/11/2026)
+(function () {
+  var reducir = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.preguntas details').forEach(function (d) {
+    var s = d.querySelector('summary'), c = d.querySelector('p'), anim = null;
+    if (!s || !c) return;
+    s.addEventListener('click', function (e) {
+      if (reducir || !c.animate) return;
+      e.preventDefault();
+      if (anim) { anim.cancel(); anim = null; }
+      if (!d.open) {
+        d.open = true;
+        var h = c.scrollHeight;
+        anim = c.animate([{ height: '0px', opacity: 0 }, { height: h + 'px', opacity: 1 }], { duration: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
+        anim.onfinish = function () { anim = null; };
+      } else {
+        var h2 = c.offsetHeight;
+        anim = c.animate([{ height: h2 + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 220, easing: 'ease-in' });
+        anim.onfinish = function () { d.open = false; anim = null; };
+      }
+    });
+  });
 })();
 </script>
 </body>
