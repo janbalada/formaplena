@@ -112,6 +112,9 @@ input[type=text], input[type=tel], input[type=number] { font: inherit; font-size
 .otro span { font-weight: 700; white-space: nowrap; }
 .lista-inc li::before { content: "✓ "; color: var(--ok); font-weight: 800; }
 .final { display: grid; gap: 10px; margin-top: 18px; }
+.cab-der { display: flex; align-items: center; gap: 10px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.idioma select { font: inherit; font-weight: 700; font-size: 13px; color: var(--ink); background: var(--surface); border: 1.5px solid var(--line); border-radius: 999px; padding: 4px 8px; min-height: 30px; cursor: pointer; }
 .aviso-amigo { background: var(--soft); color: var(--violeta); border-radius: 14px; padding: 10px 14px; font-weight: 600; font-size: 14px; margin-bottom: 16px; }
 @media (max-width: 420px) { .campos { grid-template-columns: 1fr 1fr; } .opciones.dos { grid-template-columns: 1fr; } }
 </style>
@@ -120,7 +123,8 @@ input[type=text], input[type=tel], input[type=number] { font: inherit; font-size
 <div class="envoltura">
   <header class="cab">
     <a class="marca" href="./"><i>F</i>Forma Plena</a>
-    <small id="cuenta">Test gratis · 2 min</small>
+    <div class="cab-der"><small id="cuenta">Test gratis · 2 min</small>
+    <label class="idioma"><span class="sr">Idioma</span><select class="js-idioma" aria-label="Idioma"><option value="es">ES</option><option value="ca">CA</option><option value="en">EN</option></select></label></div>
   </header>
   <div class="barra" aria-hidden="true"><div id="barra"></div></div>
   <main id="test"></main>
@@ -190,7 +194,7 @@ function pintar() {
   var p = PASOS[paso], h = '';
   marca('p' + (paso + 1));
   $('#barra').style.width = Math.round((paso + 1) / (PASOS.length + 1) * 100) + '%';
-  $('#cuenta').textContent = 'Paso ' + (paso + 1) + ' de ' + PASOS.length;
+  $('#cuenta').textContent = t('Paso {n} de {total}').replace('{n}', paso + 1).replace('{total}', PASOS.length);
   if (paso === 0 && ref) h += '<div class="aviso-amigo">🎁 Vienes recomendado por un amigo.</div>';
   h += '<section class="paso on"><h2>' + p.t + '</h2><p class="sub">' + p.s + '</p>';
   if (p.ops) {
@@ -200,22 +204,23 @@ function pintar() {
     }).join('') + '</div>';
   } else if (p.tipo === 'datos') {
     h += '<div class="opciones dos">' + ['Mujer', 'Hombre'].map(function (s) { return '<button type="button" class="op" data-sexo="' + s + '" aria-pressed="' + (R.sexo === s) + '"><span class="e">' + (s === 'Mujer' ? '👩' : '👨') + '</span><span>' + s + '</span></button>'; }).join('') + '</div>' +
-      '<div class="campos"><label class="campo">Edad<input id="edad" type="number" inputmode="numeric" min="16" max="90" placeholder="30" value="' + esc(R.edad || '') + '"></label>' +
-      '<label class="campo">Altura (cm)<input id="altura" type="number" inputmode="numeric" min="130" max="220" placeholder="170" value="' + esc(R.altura || '') + '"></label>' +
-      '<label class="campo">Peso (kg)<input id="peso" type="number" inputmode="decimal" min="35" max="250" placeholder="70" value="' + esc(R.peso || '') + '"></label></div>';
+      '<div class="campos"><label class="campo"><span>Edad</span><input id="edad" type="number" inputmode="numeric" min="16" max="90" placeholder="30" value="' + esc(R.edad || '') + '"></label>' +
+      '<label class="campo"><span>Altura (cm)</span><input id="altura" type="number" inputmode="numeric" min="130" max="220" placeholder="170" value="' + esc(R.altura || '') + '"></label>' +
+      '<label class="campo"><span>Peso (kg)</span><input id="peso" type="number" inputmode="decimal" min="35" max="250" placeholder="70" value="' + esc(R.peso || '') + '"></label></div>';
   } else if (p.tipo === 'dias') {
     h += '<div class="opciones cinco">' + [2, 3, 4, 5, 6].map(function (d) { return '<button type="button" class="op" data-dias="' + d + '" aria-pressed="' + (R.dias === d) + '">' + d + '</button>'; }).join('') + '</div><p class="nota">días por semana</p>';
   } else if (p.tipo === 'contacto') {
-    h += '<div class="contacto"><label class="campo">Tu nombre<input id="nombre" type="text" autocomplete="given-name" maxlength="60" value="' + esc(R.nombre || '') + '"></label>' +
-      '<div class="campo"><label for="tel">Tu WhatsApp</label><div class="tel-caja"><div class="tel-pref"><span id="pref-ver">+' + esc(R.pref || '34') + '</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 3.5h9L6 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>' +
+    h += '<div class="contacto"><label class="campo"><span>Tu nombre</span><input id="nombre" type="text" autocomplete="given-name" maxlength="60" value="' + esc(R.nombre || '') + '"></label>' +
+      '<div class="campo"><label for="tel">Tu WhatsApp</label><div class="tel-caja"><div class="tel-pref"><span id="pref-ver" data-no-tr>+' + esc(R.pref || '34') + '</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1.5 3.5h9L6 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>' +
       '<select id="pref" aria-label="Prefijo del país" autocomplete="tel-country-code">' + PREFIJOS.map(function (x) { return '<option value="' + x[2] + '"' + (x[0] === (R.prefPais || 'España') ? ' selected' : '') + '>' + x[1] + ' ' + x[0] + ' +' + x[2] + '</option>'; }).join('') + '</select></div>' +
-      '<input id="tel" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="18" placeholder="' + ((R.pref || '34') === '34' ? '6xx xxx xxx' : 'Número') + '" value="' + esc(R.tel || '') + '"></div></div>' +
-      (+R.edad < 18 ? '<p class="nota">Como tienes ' + esc(R.edad) + ' años, para empezar tu plan necesitaremos la autorización de tu padre, madre o tutor. Jan lo hablará contigo.</p>' : '') +
+      '<input id="tel" type="tel" autocomplete="tel-national" inputmode="tel" maxlength="18" placeholder="' + ((R.pref || '34') === '34' ? '6xx xxx xxx' : t('Número')) + '" value="' + esc(R.tel || '') + '"></div></div>' +
+      (+R.edad < 18 ? '<p class="nota" data-no-tr>' + t('Como tienes {edad} años, para empezar tu plan necesitaremos la autorización de tu padre, madre o tutor. Jan lo hablará contigo.').replace('{edad}', esc(R.edad)) + '</p>' : '') +
       '<label class="permiso"><input id="acepto" type="checkbox"' + (R.acepto ? ' checked' : '') + '><span>Acepto que Jan, de Forma Plena Coaching, guarde estas respuestas y me escriba por WhatsApp sobre este test. Puedo pedir que se borren cuando quiera.</span></label></div>';
   }
   h += '<p class="error" id="error" role="alert"></p><div class="acciones">' + (paso ? '<button type="button" class="btn sec" id="atras">← Atrás</button>' : '') +
     '<button type="button" class="btn prin" id="seguir">' + (paso === PASOS.length - 1 ? 'Ver mi resultado →' : 'Seguir →') + '</button></div></section>';
   $('#test').innerHTML = h;
+  traducir($('#test'));
   window.scrollTo(0, 0);
 }
 
@@ -225,7 +230,7 @@ document.addEventListener('change', function (ev) {
   if (ev.target.id !== 'pref') return;
   var sel = ev.target; R.pref = sel.value; R.prefPais = PREFIJOS[sel.selectedIndex][0];
   document.getElementById('pref-ver').textContent = '+' + sel.value;
-  document.getElementById('tel').placeholder = sel.value === '34' ? '6xx xxx xxx' : 'Número';
+  document.getElementById('tel').placeholder = sel.value === '34' ? '6xx xxx xxx' : t('Número');
 });
 // Número completo con prefijo (+34600000000). Si lo escriben ya con + o 00, se respeta.
 function telCompleto() {
@@ -277,56 +282,97 @@ document.addEventListener('click', function (ev) {
   if (b.id === 'reintentar') { enviar(); return; }
 });
 function siguiente() {
-  var e = validar(); if (e) { $('#error').textContent = e; return; }
+  var e = validar(); if (e) { $('#error').textContent = t(e); return; }
   if (paso < PASOS.length - 1) { paso++; pintar(); } else enviar();
 }
 
 function enviar() {
   $('#barra').style.width = '96%';
-  $('#cuenta').textContent = 'Casi listo';
+  $('#cuenta').textContent = t('Casi listo');
   $('#test').innerHTML = '<div class="cargando"><div class="rueda"></div><h2>Preparando tu resultado…</h2><p>Estamos calculando tu estimación y diseñando un ejemplo de tu primer entreno. Tarda unos segundos.</p></div>';
   var datos = { nombre: R.nombre, tel: telCompleto(), acepto: R.acepto === true, objetivo: R.objetivo, sexo: R.sexo, edad: +R.edad, altura: +R.altura,
-    peso: +String(R.peso).replace(',', '.'), dias: R.dias, lugar: R.lugar, nivel: R.nivel, frena: R.frena.join(', '), acomp: R.acomp, necesita: R.necesita, ref: ref };
+    peso: +String(R.peso).replace(',', '.'), dias: R.dias, lugar: R.lugar, nivel: R.nivel, frena: R.frena.join(', '), acomp: R.acomp, necesita: R.necesita, ref: ref, lang: LANG };
+  traducir($('#test'));
   fetch(SERVIDOR, { method: 'POST', credentials: 'omit', redirect: 'follow', body: JSON.stringify({ fn: 'testWeb', args: ['', datos] }) })
     .then(function (r) { return r.json(); })
     .then(function (j) { if (!j || !j.ok) throw new Error((j && j.error) || 'Error'); resultado(j.r); })
     .catch(function (err) {
-      $('#test').innerHTML = '<div class="cargando"><h2>No se ha podido enviar</h2><p>' + esc(err && err.message && err.message !== 'Failed to fetch' ? err.message : 'Revisa tu conexión a internet y vuelve a intentarlo.') + '</p><div class="acciones"><button type="button" class="btn prin" id="reintentar">Reintentar</button></div></div>';
+      $('#test').innerHTML = '<div class="cargando"><h2>No se ha podido enviar</h2><p>' + esc(err && err.message && err.message !== 'Failed to fetch' ? err.message : t('Revisa tu conexión a internet y vuelve a intentarlo.')) + '</p><div class="acciones"><button type="button" class="btn prin" id="reintentar">Reintentar</button></div></div>';
+      traducir($('#test'));
     });
 }
 
 function resultado(r) {
+  window.ULTIMO_RES = r;
   marca('resultado');
   $('#barra').style.width = '100%';
-  $('#cuenta').textContent = '¡Listo!';
+  $('#cuenta').textContent = t('¡Listo!');
   // 28/11/2026: el formulario se abre sabiendo que ya ha hecho el test (se salta los datos básicos)
   var urlForm = FORMULARIO + '?usp=pp_url&' + CAMPO_TEST + '=' + encodeURIComponent('Sí') + (r.id ? '&' + CAMPO_CODIGO + '=' + encodeURIComponent(r.id) : '') + (ref ? '&' + CAMPO_AMIGO + '=' + encodeURIComponent(ref) : '');
-  var wa = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent('Hola Jan, soy ' + R.nombre + '. He hecho el test de Forma Plena y me gustaría saber más.');
-  var h = '<section class="paso on"><div class="res-hero"><small>' + esc(R.nombre) + ', este es tu punto de partida</small><h2>' + esc(r.objetivo) + '</h2>' +
-    '<div class="cifras"><div><b>' + r.kcal.toLocaleString('es-ES') + '</b>kcal al día, aprox.</div><div><b>' + r.prot + ' g</b>de proteína al día</div></div></div>' +
+  var wa = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(t('Hola Jan, soy {nombre}. He hecho el test de Forma Plena y me gustaría saber más.').replace('{nombre}', R.nombre));
+  var h = '<section class="paso on"><div class="res-hero"><small data-no-tr>' + t('{nombre}, este es tu punto de partida').replace('{nombre}', esc(R.nombre)) + '</small><h2>' + esc(t(r.objetivo)) + '</h2>' +
+    '<div class="cifras"><div><b>' + r.kcal.toLocaleString(LANG === 'en' ? 'en-GB' : LANG + '-ES') + '</b><span>kcal al día, aprox.</span></div><div><b>' + r.prot + ' g</b><span>de proteína al día</span></div></div></div>' +
     '<p class="nota">Estimación orientativa a partir de tus respuestas. En tu plan la ajustamos semana a semana con tu progreso real.</p>' +
-    '<div class="tarjeta"><h3>Tu semana: ' + esc(r.plan) + '</h3><p class="meta">Encaja con tus días y con lo que buscas.</p>';
+    '<div class="tarjeta"><h3 data-no-tr>' + t('Tu semana: {plan}').replace('{plan}', esc(t(r.plan))) + '</h3><p class="meta">Encaja con tus días y con lo que buscas.</p>';
   if (r.ejemplo && r.ejemplo.ejercicios && r.ejemplo.ejercicios.length) {
-    h += '<p class="meta" style="margin-bottom:4px"><b>Ejemplo de tu primer entreno · ' + esc(r.ejemplo.nombre) + '</b></p>' + r.ejemplo.ejercicios.map(function (e, i) {
-      return '<div class="ej"><span class="n">' + (i + 1) + '</span><div><b>' + esc(e.nombre) + '</b><small>' + e.series + (+e.series === 1 ? ' serie' : ' series') + ' × ' + esc(e.reps) + (/^[\d\s–-]+$/.test(String(e.reps)) ? ' reps' : '') + '</small>' + (e.consejo ? '<p>' + esc(e.consejo) + '</p>' : '') + '</div></div>';
+    h += '<p class="meta" style="margin-bottom:4px" data-no-tr><b>' + t('Ejemplo de tu primer entreno · {nombre}').replace('{nombre}', esc(t(r.ejemplo.nombre))) + '</b></p>' + r.ejemplo.ejercicios.map(function (e, i) {
+      return '<div class="ej"><span class="n">' + (i + 1) + '</span><div data-no-tr><b>' + esc(e.nombre) + '</b><small>' + e.series + ' ' + t(+e.series === 1 ? 'serie' : 'series') + ' × ' + esc(e.reps) + (/^[\d\s–-]+$/.test(String(e.reps)) ? ' reps' : '') + '</small>' + (e.consejo ? '<p>' + esc(e.consejo) + '</p>' : '') + '</div></div>';
     }).join('');
   }
   var reco = (r.recomendado && PLANES[r.recomendado]) ? r.recomendado : recomendar(R.acomp, R.necesita), P = PLANES[reco];
   var otros = ['Esencial', 'Completo', 'Premium'].filter(function (k) { return reco.indexOf(k) !== 0; });
-  h += '</div><div class="tarjeta plan-reco"><p class="reco-et">Tu plan recomendado</p><div class="reco-cab"><h3>' + esc(reco) + '</h3><p class="reco-precio"><b>' + P.precio + '</b>/mes</p></div>' +
+  h += '</div><div class="tarjeta plan-reco"><p class="reco-et">Tu plan recomendado</p><div class="reco-cab"><h3>' + esc(t(reco)) + '</h3><p class="reco-precio" data-no-tr><b>' + P.precio + '</b>' + t('/mes') + '</p></div>' +
     '<p class="meta">' + esc(P.sub) + '</p><ul class="lista-inc">' + P.inc.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' +
-    '<div class="tarjeta"><h3>Otras opciones</h3>' + otros.map(function (k) { return '<div class="otro"><div><b>' + k + '</b><small>' + esc(PLANES[k].sub) + '</small></div><span>' + PLANES[k].precio + '/mes</span></div>'; }).join('') +
+    '<div class="tarjeta"><h3>Otras opciones</h3>' + otros.map(function (k) { return '<div class="otro"><div><b>' + t(k) + '</b><small>' + esc(PLANES[k].sub) + '</small></div><span data-no-tr>' + PLANES[k].precio + t('/mes') + '</span></div>'; }).join('') +
     '<p class="meta" style="margin:10px 0 0">IVA incluido · sin permanencia</p></div>' +
-    '<div class="final"><a class="btn prin" href="' + esc(urlForm) + '" target="_blank" rel="noopener">Quiero el plan ' + esc(reco.split(' · ')[0]) + ' →</a>' +
+    '<div class="final"><a class="btn prin" href="' + esc(urlForm) + '" target="_blank" rel="noopener" data-no-tr>' + t('Quiero el plan {plan} →').replace('{plan}', esc(t(reco.split(' · ')[0]))) + '</a>' +
     '<a class="btn sec" href="' + esc(wa) + '" target="_blank" rel="noopener">Prefiero hablar antes por WhatsApp</a></div>' +
     '<p class="nota" style="text-align:center;margin-top:14px">' + (enHorario() ? 'Jan te escribirá por WhatsApp en unos minutos.' : 'Jan te escribirá por WhatsApp mañana a primera hora.') + '</p></section>';
   $('#test').innerHTML = h;
+  traducir($('#test'));
   window.scrollTo(0, 0);
 }
 document.addEventListener('click', function (ev) {
   var a = ev.target.closest('.final a'); if (!a) return;
   marca(a.classList.contains('prin') ? 'formulario' : 'whatsapp');
 });
+// ---------- Idioma: el mismo que eligió en la web (28/11/2026) ----------
+var TR = {"Paso {n} de {total}": {"ca": "Pas {n} de {total}", "en": "Step {n} of {total}"}, "🎁 Vienes recomendado por un amigo.": {"ca": "🎁 Véns recomanat per un amic.", "en": "🎁 A friend recommended you."}, "¿Qué quieres conseguir?": {"ca": "Què vols aconseguir?", "en": "What do you want to achieve?"}, "Elige lo que más te importa ahora mismo.": {"ca": "Tria el que més t'importa ara mateix.", "en": "Choose what matters most to you right now."}, "Perder grasa<small>Bajar de peso y sentirme más ligero</small>": {"ca": "Perdre greix<small>Baixar de pes i sentir-me més lleuger</small>", "en": "Lose fat<small>Lose weight and feel lighter</small>"}, "Ganar músculo<small>Más fuerza y más volumen</small>": {"ca": "Guanyar múscul<small>Més força i més volum</small>", "en": "Build muscle<small>More strength and more size</small>"}, "Las dos cosas<small>Perder grasa y ganar músculo</small>": {"ca": "Les dues coses<small>Perdre greix i guanyar múscul</small>", "en": "Both<small>Lose fat and build muscle</small>"}, "Rendir en mi deporte<small>Correr, jugar o competir mejor</small>": {"ca": "Rendir en el meu esport<small>Córrer, jugar o competir millor</small>", "en": "Perform better in my sport<small>Run, play or compete better</small>"}, "Salud y hábitos<small>Moverme más y comer mejor</small>": {"ca": "Salut i hàbits<small>Moure'm més i menjar millor</small>", "en": "Health and habits<small>Move more and eat better</small>"}, "Seguir →": {"ca": "Continuar →", "en": "Next →"}, "Cuéntanos un poco de ti": {"ca": "Explica'ns una mica de tu", "en": "Tell us a bit about yourself"}, "Lo usamos solo para calcular tu estimación.": {"ca": "Ho fem servir només per calcular la teva estimació.", "en": "We only use it to calculate your estimate."}, "Mujer": {"ca": "Dona", "en": "Woman"}, "Hombre": {"ca": "Home", "en": "Man"}, "Edad": {"ca": "Edat", "en": "Age"}, "Altura (cm)": {"ca": "Alçada (cm)", "en": "Height (cm)"}, "Peso (kg)": {"ca": "Pes (kg)", "en": "Weight (kg)"}, "← Atrás": {"ca": "← Enrere", "en": "← Back"}, "¿Cuántos días puedes entrenar?": {"ca": "Quants dies pots entrenar?", "en": "How many days can you train?"}, "Sé realista: es mejor 3 días cumplidos que 5 a medias.": {"ca": "Sigues realista: és millor 3 dies complerts que 5 a mitges.", "en": "Be realistic: 3 days done is better than 5 half-done."}, "días por semana": {"ca": "dies per setmana", "en": "days per week"}, "¿Dónde vas a entrenar?": {"ca": "On entrenaràs?", "en": "Where will you train?"}, "Tu plan se adapta a lo que tengas.": {"ca": "El teu pla s'adapta al que tinguis.", "en": "Your plan adapts to what you have."}, "En el gimnasio": {"ca": "Al gimnàs", "en": "At the gym"}, "En casa<small>Con poco material o ninguno</small>": {"ca": "A casa<small>Amb poc material o cap</small>", "en": "At home<small>With little or no equipment</small>"}, "Al aire libre<small>Parque, pista o calle</small>": {"ca": "A l'aire lliure<small>Parc, pista o carrer</small>", "en": "Outdoors<small>Park, track or street</small>"}, "¿Cuál es tu experiencia?": {"ca": "Quina experiència tens?", "en": "What's your experience?"}, "No hay respuesta mala: empezamos desde donde estés.": {"ca": "No hi ha cap resposta dolenta: comencem des d'on siguis.", "en": "There's no wrong answer: we start from wherever you are."}, "Nunca he entrenado": {"ca": "No he entrenat mai", "en": "I've never trained"}, "Algo, pero sin constancia<small>Menos de 6 meses</small>": {"ca": "Una mica, però sense constància<small>Menys de 6 mesos</small>", "en": "A bit, but not consistently<small>Less than 6 months</small>"}, "Entreno con regularidad<small>6 meses a 2 años</small>": {"ca": "Entreno amb regularitat<small>De 6 mesos a 2 anys</small>", "en": "I train regularly<small>6 months to 2 years</small>"}, "Llevo años entrenando<small>Más de 2 años</small>": {"ca": "Fa anys que entreno<small>Més de 2 anys</small>", "en": "I've been training for years<small>More than 2 years</small>"}, "¿Qué te ha frenado hasta ahora?": {"ca": "Què t'ha frenat fins ara?", "en": "What has held you back so far?"}, "Puedes marcar varias.": {"ca": "En pots marcar diverses.", "en": "You can choose more than one."}, "Falta de tiempo": {"ca": "Falta de temps", "en": "Lack of time"}, "No sé qué hacer": {"ca": "No sé què fer", "en": "I don't know what to do"}, "No veo resultados": {"ca": "No veig resultats", "en": "I don't see results"}, "Me cuesta la dieta": {"ca": "Em costa la dieta", "en": "I struggle with my diet"}, "Lesiones o molestias": {"ca": "Lesions o molèsties", "en": "Injuries or pain"}, "Me falta motivación": {"ca": "Em falta motivació", "en": "I lack motivation"}, "¿Cómo quieres que te acompañe?": {"ca": "Com vols que t'acompanyi?", "en": "How do you want me to support you?"}, "Así te recomendamos el plan que mejor te encaja.": {"ca": "Així et recomanem el pla que millor t'encaixa.", "en": "That way we can recommend the plan that suits you best."}, "Me organizo solo<small>Quiero un buen plan y revisarlo una vez al mes</small>": {"ca": "M'organitzo sol<small>Vull un bon pla i revisar-lo un cop al mes</small>", "en": "I organise myself<small>I want a good plan and a review once a month</small>"}, "Que revisen mi progreso cada semana<small>Ajustes cada domingo y alguien pendiente</small>": {"ca": "Que revisin el meu progrés cada setmana<small>Ajustos cada diumenge i algú pendent</small>", "en": "Weekly progress reviews<small>Adjustments every Sunday and someone keeping track</small>"}, "Un trato muy cercano<small>Hablar con mi entrenador a menudo</small>": {"ca": "Un tracte molt proper<small>Parlar amb el meu entrenador sovint</small>", "en": "Very close support<small>Talk to my coach often</small>"}, "¿Qué necesitas?": {"ca": "Què necessites?", "en": "What do you need?"}, "Elige una opción.": {"ca": "Tria una opció.", "en": "Choose one option."}, "Entreno<small>Rutina a medida con vídeos</small>": {"ca": "Entrenament<small>Rutina a mida amb vídeos</small>", "en": "Training<small>Custom routine with videos</small>"}, "Nutrición<small>Pautas de alimentación con opciones</small>": {"ca": "Nutrició<small>Pautes d'alimentació amb opcions</small>", "en": "Nutrition<small>Nutrition guidelines with options</small>"}, "Los dos<small>Entreno y nutrición</small>": {"ca": "Les dues<small>Entrenament i nutrició</small>", "en": "Both<small>Training and nutrition</small>"}, "¿A quién le enviamos tu resultado?": {"ca": "A qui li enviem el resultat?", "en": "Who should we send your result to?"}, "Te enseñamos tu estimación y tu primer entreno aquí mismo.": {"ca": "Et mostrem la teva estimació i el teu primer entrenament aquí mateix.", "en": "We'll show you your estimate and your first workout right here."}, "Tu nombre": {"ca": "El teu nom", "en": "Your name"}, "Tu WhatsApp": {"ca": "El teu WhatsApp", "en": "Your WhatsApp"}, "Número": {"ca": "Número", "en": "Number"}, "Acepto que Jan, de Forma Plena Coaching, guarde estas respuestas y me escriba por WhatsApp sobre este test. Puedo pedir que se borren cuando quiera.": {"ca": "Accepto que en Jan, de Forma Plena Coaching, guardi aquestes respostes i m'escrigui per WhatsApp sobre aquest test. Puc demanar que s'esborrin quan vulgui.", "en": "I agree that Jan, from Forma Plena Coaching, may keep these answers and message me on WhatsApp about this test. I can ask for them to be deleted at any time."}, "Ver mi resultado →": {"ca": "Veure el meu resultat →", "en": "See my result →"}, "Prefijo del país": {"ca": "Prefix del país", "en": "Country code"}, "Idioma": {"ca": "Idioma", "en": "Language"}, "Como tienes {edad} años, para empezar tu plan necesitaremos la autorización de tu padre, madre o tutor. Jan lo hablará contigo.": {"ca": "Com que tens {edad} anys, per començar el teu pla necessitarem l'autorització del teu pare, mare o tutor. En Jan ho parlarà amb tu.", "en": "As you're {edad}, we'll need permission from your parent or guardian to start your plan. Jan will talk it through with you."}, "Elige una opción para seguir.": {"ca": "Tria una opció per continuar.", "en": "Choose an option to continue."}, "Elige mujer u hombre.": {"ca": "Tria dona o home.", "en": "Choose woman or man."}, "De momento trabajamos con personas de 16 años o más. ¡Te esperamos cuando los cumplas! 💪": {"ca": "De moment treballem amb persones de 16 anys o més. T'esperem quan els facis! 💪", "en": "For now we work with people aged 16 or over. We'll be here when you turn 16! 💪"}, "Escribe tu edad.": {"ca": "Escriu la teva edat.", "en": "Enter your age."}, "Escribe tu altura en centímetros (por ejemplo, 170).": {"ca": "Escriu la teva alçada en centímetres (per exemple, 170).", "en": "Enter your height in centimetres (for example, 170)."}, "Escribe tu peso en kilos.": {"ca": "Escriu el teu pes en quilos.", "en": "Enter your weight in kilos."}, "Elige cuántos días.": {"ca": "Tria quants dies.", "en": "Choose how many days."}, "Escribe tu nombre.": {"ca": "Escriu el teu nom.", "en": "Enter your name."}, "Escribe un WhatsApp válido.": {"ca": "Escriu un WhatsApp vàlid.", "en": "Enter a valid WhatsApp number."}, "Marca la casilla para que podamos escribirte.": {"ca": "Marca la casella perquè et puguem escriure.", "en": "Tick the box so we can message you."}, "Casi listo": {"ca": "Gairebé a punt", "en": "Almost ready"}, "Preparando tu resultado…": {"ca": "Preparant el teu resultat…", "en": "Preparing your result…"}, "Estamos calculando tu estimación y diseñando un ejemplo de tu primer entreno. Tarda unos segundos.": {"ca": "Estem calculant la teva estimació i dissenyant un exemple del teu primer entrenament. Triga uns segons.", "en": "We're calculating your estimate and designing a sample first workout. It takes a few seconds."}, "No se ha podido enviar": {"ca": "No s'ha pogut enviar", "en": "It couldn't be sent"}, "Revisa tu conexión a internet y vuelve a intentarlo.": {"ca": "Revisa la connexió a internet i torna-ho a provar.", "en": "Check your internet connection and try again."}, "Reintentar": {"ca": "Tornar-ho a provar", "en": "Try again"}, "¡Listo!": {"ca": "Fet!", "en": "Done!"}, "Hola Jan, soy {nombre}. He hecho el test de Forma Plena y me gustaría saber más.": {"ca": "Hola Jan, soc {nombre}. He fet el test de Forma Plena i m'agradaria saber-ne més.", "en": "Hi Jan, I'm {nombre}. I've taken the Forma Plena test and I'd like to know more."}, "{nombre}, este es tu punto de partida": {"ca": "{nombre}, aquest és el teu punt de partida", "en": "{nombre}, this is your starting point"}, "Perder grasa": {"ca": "Perdre greix", "en": "Lose fat"}, "Ganar masa muscular": {"ca": "Guanyar massa muscular", "en": "Build muscle"}, "Perder grasa y ganar músculo": {"ca": "Perdre greix i guanyar múscul", "en": "Lose fat and build muscle"}, "Mejorar rendimiento deportivo": {"ca": "Millorar el rendiment esportiu", "en": "Improve sports performance"}, "Mejorar salud y hábitos": {"ca": "Millorar la salut i els hàbits", "en": "Improve health and habits"}, "Tu semana: {plan}": {"ca": "La teva setmana: {plan}", "en": "Your week: {plan}"}, "1 días de cuerpo completo": {"ca": "1 dia de cos complet", "en": "1 full-body day"}, "2 días de cuerpo completo": {"ca": "2 dies de cos complet", "en": "2 full-body days"}, "3 días de cuerpo completo": {"ca": "3 dies de cos complet", "en": "3 full-body days"}, "4 días torso / pierna": {"ca": "4 dies tors / cama", "en": "4 days upper / lower"}, "5 días empuje / tirón / pierna": {"ca": "5 dies empenta / estirada / cama", "en": "5 days push / pull / legs"}, "6 días empuje / tirón / pierna": {"ca": "6 dies empenta / estirada / cama", "en": "6 days push / pull / legs"}, "7 días empuje / tirón / pierna": {"ca": "7 dies empenta / estirada / cama", "en": "7 days push / pull / legs"}, "Ejemplo de tu primer entreno · {nombre}": {"ca": "Exemple del teu primer entrenament · {nombre}", "en": "Sample first workout · {nombre}"}, "Tu primer entreno": {"ca": "El teu primer entrenament", "en": "Your first workout"}, "serie": {"ca": "sèrie", "en": "set"}, "series": {"ca": "sèries", "en": "sets"}, "Esencial": {"ca": "Essencial", "en": "Essential"}, "Esencial · solo entreno": {"ca": "Essencial · només entrenament", "en": "Essential · training only"}, "Esencial · solo nutrición": {"ca": "Essencial · només nutrició", "en": "Essential · nutrition only"}, "Completo": {"ca": "Complet", "en": "Complete"}, "Premium": {"ca": "Premium", "en": "Premium"}, "/mes": {"ca": "/mes", "en": "/month"}, "Quiero el plan {plan} →": {"ca": "Vull el pla {plan} →", "en": "I want the {plan} plan →"}, "kcal al día, aprox.": {"ca": "kcal al dia, aprox.", "en": "kcal a day, approx."}, "de proteína al día": {"ca": "de proteïna al dia", "en": "of protein a day"}, "Estimación orientativa a partir de tus respuestas. En tu plan la ajustamos semana a semana con tu progreso real.": {"ca": "Estimació orientativa a partir de les teves respostes. Al teu pla l'ajustem setmana a setmana amb el teu progrés real.", "en": "An approximate estimate based on your answers. In your plan we adjust it week by week with your real progress."}, "Encaja con tus días y con lo que buscas.": {"ca": "Encaixa amb els teus dies i amb el que busques.", "en": "It fits your days and what you're looking for."}, "Tu plan recomendado": {"ca": "El teu pla recomanat", "en": "Your recommended plan"}, "Entreno y nutrición, con una revisión al mes": {"ca": "Entrenament i nutrició, amb una revisió al mes", "en": "Training and nutrition, with a monthly review"}, "Rutina y pautas de alimentación a medida": {"ca": "Rutina i pautes d'alimentació a mida", "en": "Custom routine and nutrition guidelines"}, "App con el vídeo de cada ejercicio y tu progreso": {"ca": "App amb el vídeo de cada exercici i el teu progrés", "en": "App with a video for every exercise and your progress"}, "Revisión de tu plan cada 4 semanas": {"ca": "Revisió del teu pla cada 4 setmanes", "en": "Plan review every 4 weeks"}, "Chat para dudas, respuesta en 48 h": {"ca": "Xat per a dubtes, resposta en 48 h", "en": "Chat for questions, reply within 48 h"}, "Otras opciones": {"ca": "Altres opcions", "en": "Other options"}, "Entreno y nutrición, revisados contigo cada semana": {"ca": "Entrenament i nutrició, revisats amb tu cada setmana", "en": "Training and nutrition, reviewed with you every week"}, "El trato más cercano, con videollamada cada 15 días": {"ca": "El tracte més proper, amb videotrucada cada 15 dies", "en": "The closest support, with a video call every 15 days"}, "IVA incluido · sin permanencia": {"ca": "IVA inclòs · sense permanència", "en": "VAT included · no commitment"}, "Prefiero hablar antes por WhatsApp": {"ca": "Prefereixo parlar abans per WhatsApp", "en": "I'd rather talk on WhatsApp first"}, "Jan te escribirá por WhatsApp en unos minutos.": {"ca": "En Jan t'escriurà per WhatsApp en uns minuts.", "en": "Jan will message you on WhatsApp in a few minutes."}, "Jan te escribirá por WhatsApp mañana a primera hora.": {"ca": "En Jan t'escriurà per WhatsApp demà a primera hora.", "en": "Jan will message you on WhatsApp first thing tomorrow."}, "Tu entreno a medida, con una revisión al mes": {"ca": "El teu entrenament a mida, amb una revisió al mes", "en": "Your custom training, with a monthly review"}, "Rutina a medida": {"ca": "Rutina a mida", "en": "Custom routine"}, "Tus pautas de alimentación, con una revisión al mes": {"ca": "Les teves pautes d'alimentació, amb una revisió al mes", "en": "Your nutrition guidelines, with a monthly review"}, "Pautas de alimentación con opciones para elegir": {"ca": "Pautes d'alimentació amb opcions per triar", "en": "Nutrition guidelines with options to choose from"}, "Marca tus comidas en la app en un toque": {"ca": "Marca els teus àpats a l'app amb un toc", "en": "Log your meals in the app with one tap"}, "Revisión cada domingo y ajustes según tu progreso": {"ca": "Revisió cada diumenge i ajustos segons el teu progrés", "en": "Sunday check-in and adjustments based on your progress"}, "Chat con tu entrenador, respuesta en menos de 24 h": {"ca": "Xat amb el teu entrenador, resposta en menys de 24 h", "en": "Chat with your coach, reply within 24 h"}, "Videollamada de bienvenida de 20 minutos": {"ca": "Videotrucada de benvinguda de 20 minuts", "en": "20-minute welcome video call"}, "Todo lo del plan Completo": {"ca": "Tot el del pla Complet", "en": "Everything in the Complete plan"}, "Videollamada contigo cada 15 días": {"ca": "Videotrucada amb tu cada 15 dies", "en": "Video call with you every 15 days"}, "Chat prioritario: respuesta el mismo día": {"ca": "Xat prioritari: resposta el mateix dia", "en": "Priority chat: same-day reply"}, "Test gratis · Forma Plena": {"ca": "Test gratuït · Forma Plena", "en": "Free test · Forma Plena"}, "Test gratis · 2 min": {"ca": "Test gratuït · 2 min", "en": "Free test · 2 min"}};
+var LANGS = ['es', 'ca', 'en'];
+function elegirIdioma() {
+  var q = ''; try { q = new URLSearchParams(location.search).get('lang') || ''; } catch (e) {}
+  if (LANGS.indexOf(q) >= 0) { try { localStorage.setItem('fp_lang', q); } catch (e) {} return q; }
+  try { var g = localStorage.getItem('fp_lang'); if (LANGS.indexOf(g) >= 0) return g; } catch (e) {}
+  var ls = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'es'];
+  for (var i = 0; i < ls.length; i++) { var c = String(ls[i]).toLowerCase().slice(0, 2); if (c === 'ca' || c === 'es' || c === 'en') return c; if (c === 'eu' || c === 'gl') return 'es'; }
+  return 'en';
+}
+var LANG = elegirIdioma();
+function t(es) { if (LANG === 'es') return es; var d = TR[es]; return d && d[LANG] ? d[LANG] : es; }
+function traducir(raiz) {
+  (function rec(el) {
+    if (!el || el.nodeType !== 1) return;
+    if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'svg' || el.tagName === 'SELECT' || el.hasAttribute('data-no-tr')) return;
+    for (var n = el.firstChild; n; n = n.nextSibling) if (n.nodeType === 3 && n.nodeValue.trim()) {
+      if (el.dataset.es == null) el.dataset.es = el.innerHTML.trim();
+      var nuevo = t(el.dataset.es); if (el.innerHTML.trim() !== nuevo) el.innerHTML = nuevo; return;
+    }
+    for (var c = el.firstElementChild; c; c = c.nextElementSibling) rec(c);
+  })(raiz);
+  raiz.querySelectorAll('[aria-label]').forEach(function (el) { if (el.dataset.esAria == null) el.dataset.esAria = el.getAttribute('aria-label'); el.setAttribute('aria-label', t(el.dataset.esAria)); });
+}
+function ponerIdioma(l) {
+  LANG = l; document.documentElement.lang = l;
+  try { localStorage.setItem('fp_lang', l); } catch (e) {}
+  document.title = t('Test gratis · Forma Plena');
+  document.querySelectorAll('.js-idioma').forEach(function (s) { s.value = l; });
+}
+document.querySelector('.js-idioma').addEventListener('change', function () {
+  if ($('#test .paso') && !window.ULTIMO_RES) guardarCampos();
+  ponerIdioma(this.value);
+  if (window.ULTIMO_RES) resultado(window.ULTIMO_RES); else if ($('#test .cargando')) traducir($('#test')); else pintar();
+});
+ponerIdioma(LANG);
 pintar();
 </script>
 </body>
